@@ -50,12 +50,11 @@ Repositorio: https://github.com/SrVerde/etiquetas_coffeeandcopy (rama `main`).
 - ✅ `http://etiquetas.local` responde en esta PC.
 - ✅ Probado desde un celular en la red: `http://etiquetas.local` abre.
 - ✅ Acceso con PIN implementado (los clientes del café comparten la red). La cola compartida `ticket` da permiso de imprimir a Todos y SMB está abierto en el firewall; hoy solo lo frena que `Taller` no tiene contraseña e Invitado está desactivado. Si se le pone contraseña a `Taller`, revisar la cola.
-- ⏳ Falta probar que el servidor arranca solo tras reiniciar la PC.
+- ✅ Probado: tras reiniciar la PC el servidor arranca solo.
 
 ## Pendientes sugeridos
 
-1. Reiniciar la PC y verificar que el servidor arranca solo.
-2. Opcional: reserva DHCP, ajustar el margen cuando se fije el rollo.
+1. Opcional: reserva DHCP, ajustar el margen cuando se fije el rollo.
 
 ## Cómo probar
 
