@@ -12,6 +12,38 @@ function Stop-Servidor {
     ForEach-Object { Write-Host "  Deteniendo servidor anterior (PID $($_.ProcessId))"; Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
 }
 
+function Test-Servidor {
+  Start-Sleep -Seconds 4
+  try {
+    $r = Invoke-RestMethod -Uri 'http://localhost/api/config' -TimeoutSec 5
+    Write-Host "   OK: el servidor responde en esta PC ($($r.host))."
+  } catch {
+    Write-Host "   El servidor no responde todavia. Revisa $dir\logs\servidor.log" -ForegroundColor Yellow
+  }
+  # Resolve-DnsName solo consulta DNS clasico; el resolvedor del sistema (el de los navegadores) si usa mDNS
+  $ip = $null
+  for ($i = 0; $i -lt 5 -and -not $ip; $i++) {
+    try { $ip = ([System.Net.Dns]::GetHostAddresses('etiquetas.local') | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object -First 1).IPAddressToString }
+    catch { Start-Sleep -Seconds 1 }
+  }
+  if ($ip) { Write-Host "   OK: etiquetas.local -> $ip" }
+  else     { Write-Host '   etiquetas.local aun no resuelve en esta PC (puede tardar unos segundos).' -ForegroundColor Yellow }
+}
+
+if ($Accion -eq 'reiniciar') {
+  if (-not (Get-ScheduledTask -TaskName $task -ErrorAction SilentlyContinue)) {
+    throw "No existe la tarea '$task'. Ejecuta instalar-servicio.cmd primero."
+  }
+  Write-Host 'Reiniciando el servidor...'
+  Stop-ScheduledTask -TaskName $task -ErrorAction SilentlyContinue
+  Stop-Servidor
+  Start-ScheduledTask -TaskName $task
+  Write-Host '   Tarea reiniciada.'
+  Write-Host "`nComprobando..."
+  Test-Servidor
+  return
+}
+
 if ($Accion -eq 'desinstalar') {
   Unregister-ScheduledTask -TaskName $task -Confirm:$false -ErrorAction SilentlyContinue
   Stop-Servidor
@@ -51,19 +83,5 @@ Start-ScheduledTask -TaskName $task
 Write-Host '   Tarea creada e iniciada.'
 
 Write-Host "`n4) Comprobando..."
-Start-Sleep -Seconds 4
-try {
-  $r = Invoke-RestMethod -Uri 'http://localhost/api/config' -TimeoutSec 5
-  Write-Host "   OK: el servidor responde en esta PC ($($r.host))."
-} catch {
-  Write-Host "   El servidor no responde todavia. Revisa $dir\logs\servidor.log" -ForegroundColor Yellow
-}
-# Resolve-DnsName solo consulta DNS clasico; el resolvedor del sistema (el de los navegadores) si usa mDNS
-$ip = $null
-for ($i = 0; $i -lt 5 -and -not $ip; $i++) {
-  try { $ip = ([System.Net.Dns]::GetHostAddresses('etiquetas.local') | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object -First 1).IPAddressToString }
-  catch { Start-Sleep -Seconds 1 }
-}
-if ($ip) { Write-Host "   OK: etiquetas.local -> $ip" }
-else     { Write-Host '   etiquetas.local aun no resuelve en esta PC (puede tardar unos segundos).' -ForegroundColor Yellow }
+Test-Servidor
 Write-Host "`nListo. Abre  http://etiquetas.local  desde cualquier equipo de la red."

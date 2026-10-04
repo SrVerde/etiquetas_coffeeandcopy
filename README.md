@@ -36,6 +36,10 @@ Doble clic en **`instalar-servicio.cmd`**. Pide permisos de administrador y hace
 
 `desinstalar-servicio.cmd` deshace todo lo anterior.
 
+### Actualizar
+
+Doble clic en **`actualizar.cmd`**. Hace `git pull` (solo avance rápido: si hay cambios locales que chocan, se detiene sin tocar nada) y reinicia la tarea "Servidor de etiquetas" (pide permisos de administrador). Al final comprueba que el servidor responde y que `etiquetas.local` resuelve.
+
 ## Uso
 
 | Desde | Dirección |
@@ -113,7 +117,8 @@ public/index.html      editor web
 plantillas/            plantillas guardadas desde el editor
 ejemplos/              plantillas de ejemplo (ticket, prueba de sticker)
 herramientas/          calibración del área de impresión
-servicio.ps1           instalación / desinstalación del arranque automático
+servicio.ps1           instalación / desinstalación / reinicio del arranque automático
+actualizar.cmd         git pull + reinicio de la tarea del servidor
 diagnose-codepage.js   prueba de páginas de códigos
 ```
 
