@@ -38,26 +38,22 @@ Repositorio: https://github.com/SrVerde/etiquetas_coffeeandcopy (rama `main`).
 - `servicio.ps1` + `instalar-servicio.cmd` / `desinstalar-servicio.cmd` — tarea programada al arrancar (SYSTEM, reinicio cada minuto si falla) y reglas de firewall TCP 80 + UDP 5353. Quita las reglas de **bloqueo** a node.exe que crea el aviso del firewall.
 - `herramientas/calibracion.js` — regla a todo el ancho (`npm run calibrar`).
 
-## Estado al cerrar la sesión anterior (3 oct 2026)
+## Estado (3 oct 2026, sesión local con Claude Code)
 
 - ✅ Impresión probada por USB y por UNC; las dos salen idénticas con márgenes por software.
 - ✅ Editor web probado: imprimió desde la interfaz.
-- ✅ `http://etiquetas.local` responde **en esta PC** (puerto 80, mDNS funcionando).
-- ✅ Código subido a GitHub (commit inicial `bb18929`).
-- ⏳ El servidor está corriendo **a mano** en una ventana de consola, lanzado por `_claude_test\11_probar_dns.cmd`.
-- ⏳ **`instalar-servicio.cmd` todavía no se ha ejecutado** (requiere administrador).
-- ⏳ **No se ha probado el acceso desde otra PC** de la red.
-- ⏳ La carpeta `C:\Users\Taller\Desktop\node_escpos1` **no es un repositorio git** y su estructura difiere del repo:
-  - el repo tiene `ejemplos/`, `herramientas/`, `README.md`, `.gitignore`, `.gitattributes` y `package.json` v4;
-  - en la carpeta, `ticket-example.json` y `holaquehace.json` están en la raíz;
-  - la carpeta tiene archivos que no van al repo: `printer_test*.js/.bin`, `image.png` (stock con marca de agua, no subir), `node_escpos1.rar`, respaldos de vim `*~` / `*.un~`, y `_claude_test/` (scripts de prueba y diagnóstico de la sesión anterior; los originales previos están en `_claude_test\originales`).
+- ✅ `C:\Users\Taller\Desktop\node_escpos1` es copia de trabajo del repo (rama `main`, sigue a `origin/main`). Git 2.55 con `user.name SrVerde`.
+- ✅ Archivos viejos (`printer_test*`, `image.png`, `.rar`, respaldos de vim, `_claude_test/`, JSON duplicados de la raíz) movidos a `_archivo\`, excluido solo localmente en `.git/info/exclude`.
+- ✅ Tarea **"Servidor de etiquetas"** instalada (SYSTEM, al arrancar) y reglas de firewall creadas. Un usuario sin elevar no puede consultar la tarea (`Get-ScheduledTask`/`schtasks` → acceso denegado); para comprobarla, mira que el proceso node del puerto 80 tenga como padre `svchost` y revisa `logs\servidor.log`.
+- ✅ `actualizar.cmd`: `git pull --ff-only` como usuario normal y luego reinicia la tarea con UAC. Probado.
+- ✅ `http://etiquetas.local` responde en esta PC.
+- ⏳ **No se ha probado el acceso desde otra PC** de la red ni un reinicio de la PC.
 
-## Pendientes sugeridos (en orden)
+## Pendientes sugeridos
 
-1. Instalar Git para Windows si falta. Convertir `node_escpos1` en copia de trabajo del repo **sin perder** `server-config.json`, `plantillas/` ni `logs/`. Por ejemplo: clonar en otra carpeta, comparar y mover, o `git init` + `remote add` + `fetch` + `reset --mixed origin/main` y revisar las diferencias. Confirmar con el usuario antes de borrar o mover archivos suyos.
-2. Detener el servidor manual, ejecutar `instalar-servicio.cmd` (pedirá UAC al usuario), verificar `http://etiquetas.local` y, si es posible, reiniciar y volver a verificar.
-3. Pedir al usuario que pruebe `http://etiquetas.local` desde otra PC o un celular.
-4. Opcional: `actualizar.cmd` (git pull + reiniciar la tarea), reserva DHCP, ajustar el margen cuando se fije el rollo, limpiar archivos viejos (con permiso del usuario).
+1. Pedir al usuario que pruebe `http://etiquetas.local` desde otra PC o un celular.
+2. Reiniciar la PC y verificar que el servidor arranca solo.
+3. Opcional: reserva DHCP, ajustar el margen cuando se fije el rollo.
 
 ## Cómo probar
 

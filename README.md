@@ -36,6 +36,10 @@ Doble clic en **`instalar-servicio.cmd`**. Pide permisos de administrador y hace
 
 `desinstalar-servicio.cmd` deshace todo lo anterior.
 
+### Actualizar
+
+Doble clic en **`actualizar.cmd`**: hace `git pull` desde GitHub y reinicia la tarea del servidor (pide permisos de administrador para el reinicio). Si hay cambios locales que chocan con los del repo, no toca nada y lo avisa.
+
 ## Uso
 
 | Desde | Dirección |
