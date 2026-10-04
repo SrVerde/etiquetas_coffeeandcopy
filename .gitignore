@@ -3,6 +3,7 @@ node_modules/
 
 # Datos locales del servidor
 logs/
+datos/
 
 # Respaldos de editores (vim, etc.)
 *~

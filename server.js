@@ -7,7 +7,12 @@
  * Configuración en server-config.json (se crea la primera vez).
  * Plantillas en la carpeta ./plantillas (mismo formato JSON que main.js).
  *
+ * Acceso con PIN (auth.js): todo pide sesión salvo /login.html y /api/login.
+ * El PIN se configura con  node herramientas/pin.js
+ *
  * API
+ *   POST   /api/login                  → { pin }  (crea la sesión)
+ *   POST   /api/logout                 → cierra la sesión de este dispositivo
  *   GET    /api/config                 → columnas, transporte por defecto…
  *   GET    /api/templates              → ["etiqueta", …]
  *   GET    /api/templates/:nombre      → plantilla
@@ -24,6 +29,7 @@ import { fileURLToPath } from 'node:url';
 import { appendFileSync, mkdirSync, statSync, renameSync } from 'node:fs';
 import { buildBuffer, sendUsb, sendUnc, DEFAULT_USB_MATCH } from './printer.js';
 import { startMdns } from './mdns.js';
+import { createAuth } from './auth.js';
 
 const __dirname   = dirname(fileURLToPath(import.meta.url));
 const CONFIG_PATH = join(__dirname, 'server-config.json');
@@ -31,6 +37,7 @@ const TPL_DIR     = join(__dirname, 'plantillas');
 const PUBLIC_DIR  = join(__dirname, 'public');
 const LOG_DIR     = join(__dirname, 'logs');
 const LOG_FILE    = join(LOG_DIR, 'servidor.log');
+const DATA_DIR    = join(__dirname, 'datos');     // PIN y sesiones (fuera del repo)
 
 // ── Registro: consola + logs/servidor.log (rota a .old al pasar de 5 MB) ────
 mkdirSync(LOG_DIR, { recursive: true });
@@ -151,9 +158,20 @@ function enqueue(fn) {
 // ── Server ───────────────────────────────────────────────────────────────────
 const config = await loadConfig();
 await mkdir(TPL_DIR, { recursive: true });
+const auth = createAuth(DATA_DIR, log);
+const PUBLIC_PATHS = new Set(['/login.html', '/api/login']);
 
 async function handleApi(req, res, url) {
   const parts = url.pathname.split('/').filter(Boolean).map(decodeURIComponent);   // ['api', ...]
+
+  if (parts[1] === 'login' && req.method === 'POST') {
+    const { status, body } = await auth.login(req, res, (await readBody(req, 1000)).pin);
+    return send(res, status, body);
+  }
+  if (parts[1] === 'logout' && req.method === 'POST') {
+    auth.logout(req, res);
+    return send(res, 200, { ok: true });
+  }
 
   if (parts[1] === 'config' && req.method === 'GET') {
     return send(res, 200, {
@@ -225,6 +243,17 @@ async function handleStatic(req, res, url) {
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://x');
   try {
+    // Peticiones que cambian algo solo desde páginas de este mismo servidor
+    const origin = req.headers.origin;
+    if (req.method !== 'GET' && origin && origin !== `http://${req.headers.host}`)
+      return send(res, 403, { error: 'Origen no permitido' });
+
+    if (!PUBLIC_PATHS.has(url.pathname) && !auth.session(req, res)) {
+      if (url.pathname.startsWith('/api/')) return send(res, 401, { error: 'Inicia sesión con el PIN', login: true });
+      res.writeHead(302, { Location: '/login.html', 'Cache-Control': 'no-store' });
+      return res.end();
+    }
+
     if (url.pathname.startsWith('/api/')) await handleApi(req, res, url);
     else if (req.method === 'GET')        await handleStatic(req, res, url);
     else send(res, 405, { error: 'Método no permitido' });

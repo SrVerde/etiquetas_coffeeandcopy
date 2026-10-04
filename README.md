@@ -36,6 +36,15 @@ Doble clic en **`instalar-servicio.cmd`**. Pide permisos de administrador y hace
 
 `desinstalar-servicio.cmd` deshace todo lo anterior.
 
+### PIN de acceso
+
+La red también la usan clientes, así que el editor y la API piden un **PIN** (6 a 12 dígitos). Cada dispositivo lo escribe una vez y queda con la sesión abierta un año desde el último uso. "Salir", en el editor, cierra la sesión de ese dispositivo.
+
+- **Fijar o cambiar el PIN:** doble clic en `cambiar-pin.cmd` (o `npm run pin`) en esta PC. Al cambiarlo se cierran las sesiones de todos los dispositivos. No hace falta reiniciar el servidor.
+- Tras 5 PIN incorrectos desde una IP, esa IP espera 1, 5, 15 y luego 60 minutos por intento.
+- El PIN (con hash scrypt) y las sesiones se guardan en `datos/`, fuera del repo. Sin `datos/pin.json` nadie puede entrar.
+- La conexión es HTTP sin cifrar: el PIN frena a clientes curiosos, no a alguien que espíe la red. Si el router tiene **red de invitados**, conviene poner ahí a los clientes.
+
 ### Actualizar
 
 Doble clic en **`actualizar.cmd`**: hace `git pull` desde GitHub y reinicia la tarea del servidor (pide permisos de administrador para el reinicio). Si hay cambios locales que chocan con los del repo, no toca nada y lo avisa.
@@ -68,6 +77,8 @@ Content-Type: application/json
 
 | Método | Ruta | Descripción |
 |---|---|---|
+| `POST` | `/api/login` | `{ "pin": "…" }`: abre sesión (cookie). Las demás rutas responden 401 sin ella |
+| `POST` | `/api/logout` | Cierra la sesión de este dispositivo |
 | `GET` | `/api/config` | Columnas, vía por defecto, nombre del equipo |
 | `GET` | `/api/templates` | Lista de plantillas |
 | `GET / PUT / DELETE` | `/api/templates/:nombre` | Leer, guardar (`{ "ticket": [...] }`) o borrar |
@@ -109,6 +120,7 @@ En las filas (`row`), el ancho de las columnas debe sumar `paperWidth` (38).
 
 ```
 server.js              servidor HTTP + API + cola de impresión
+auth.js                PIN, sesiones persistentes y bloqueo por intentos
 mdns.js                anunciador mDNS (etiquetas.local)
 printer.js             JSON → ESC/POS, márgenes por software, envío USB/UNC
 usb-send.ps1           escritura RAW a la interfaz USB (Win32 CreateFile/WriteFile)
@@ -116,7 +128,8 @@ main.js                impresión desde la línea de comandos
 public/index.html      editor web
 plantillas/            plantillas guardadas desde el editor
 ejemplos/              plantillas de ejemplo (ticket, prueba de sticker)
-herramientas/          calibración del área de impresión
+herramientas/          calibración del área de impresión, configuración del PIN
+datos/                 PIN y sesiones (local, no va al repo)
 servicio.ps1           instalación / desinstalación del arranque automático
 diagnose-codepage.js   prueba de páginas de códigos
 ```

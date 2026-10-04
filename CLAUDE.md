@@ -32,6 +32,7 @@ Repositorio: https://github.com/SrVerde/etiquetas_coffeeandcopy (rama `main`).
 
 - `printer.js` — JSON → ESC/POS (`buildBuffer`), envío `sendUsb` / `sendUnc`, `printTicket`.
 - `server.js` — HTTP sin dependencias: estáticos de `public/`, CRUD de `plantillas/*.json`, `POST /api/print` con cola (una impresión a la vez), variables `{{campo}}`, copias. Registro en `logs/servidor.log`. Config en `server-config.json` (puerto 80, `mdnsName: "etiquetas"`, transporte por defecto `usb`).
+- `auth.js` — PIN (scrypt, `datos/pin.json`) + sesiones persistentes por cookie (`datos/sesiones.json`, solo SHA-256 del token, atadas al PIN) + bloqueo por IP tras 5 fallos. Todo pide sesión salvo `/login.html` y `/api/login`. PIN con `cambiar-pin.cmd` / `herramientas/pin.js`.
 - `mdns.js` — anunciador mDNS propio (A + NSEC para AAAA) en UDP 5353.
 - `public/index.html` — editor (vanilla JS, sin CDNs): texto con tamaño/alineación/negrita, separador, espacio, vista previa de 38 columnas, plantillas, copias, Ctrl+S / Ctrl+P.
 - `main.js` — CLI: `node main.js plantilla.json [--usb | --unc=\\PC\cola]`.
@@ -48,6 +49,7 @@ Repositorio: https://github.com/SrVerde/etiquetas_coffeeandcopy (rama `main`).
 - ✅ `actualizar.cmd`: `git pull --ff-only` como usuario normal y luego reinicia la tarea con UAC. Probado.
 - ✅ `http://etiquetas.local` responde en esta PC.
 - ✅ Probado desde un celular en la red: `http://etiquetas.local` abre.
+- ✅ Acceso con PIN implementado (los clientes del café comparten la red). La cola compartida `ticket` da permiso de imprimir a Todos y SMB está abierto en el firewall; hoy solo lo frena que `Taller` no tiene contraseña e Invitado está desactivado. Si se le pone contraseña a `Taller`, revisar la cola.
 - ⏳ Falta probar que el servidor arranca solo tras reiniciar la PC.
 
 ## Pendientes sugeridos

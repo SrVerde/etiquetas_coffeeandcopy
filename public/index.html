@@ -111,6 +111,7 @@
       <option value="unc">Cola compartida</option>
     </select>
     <button class="btn primary" id="btnPrint" title="Imprimir (Ctrl+P)">Imprimir</button>
+    <button class="btn ghost" id="btnLogout" title="Cerrar la sesión en este dispositivo">Salir</button>
   </div>
 </header>
 
@@ -366,9 +367,15 @@ function toast(msg, err = false) {
 async function api(path, opts = {}) {
   const r = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
   const j = await r.json().catch(() => ({}));
+  if (r.status === 401 && j.login) { location.href = '/login.html'; throw new Error(j.error); }
   if (!r.ok) throw new Error(j.error || `Error ${r.status}`);
   return j;
 }
+$('#btnLogout').onclick = async () => {
+  if (!confirm('¿Cerrar la sesión en este dispositivo? Habrá que escribir el PIN otra vez.')) return;
+  await api('/api/logout', { method: 'POST' }).catch(() => {});
+  location.href = '/login.html';
+};
 async function refreshTemplates(selectName) {
   const names = await api('/api/templates');
   const s = $('#tplSelect');

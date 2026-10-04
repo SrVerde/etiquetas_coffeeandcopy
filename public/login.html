@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Etiquetas · Entrar</title>
+<style>
+  :root {
+    --bg: #f3f2ef; --panel: #ffffff; --ink: #1d1d1b; --muted: #6d6a64; --line: #e2dfd8;
+    --accent: #1f5f5b; --accent-ink: #ffffff; --accent-soft: #e3efed; --danger: #a33a2c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink);
+    font: 14px/1.4 system-ui, "Segoe UI", Roboto, sans-serif; }
+  body { display: grid; place-items: center; min-height: 100vh; padding: 16px; }
+  form { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 24px;
+    width: 100%; max-width: 320px; display: grid; gap: 14px; }
+  h1 { font-size: 18px; margin: 0; letter-spacing: .02em; }
+  p { margin: 0; color: var(--muted); font-size: 13px; }
+  input { font: inherit; font-size: 24px; letter-spacing: .4em; text-align: center; width: 100%;
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px; background: #fff; color: inherit; }
+  input:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+  button { font: inherit; font-weight: 600; border: 1px solid var(--accent); background: var(--accent);
+    color: var(--accent-ink); border-radius: 8px; padding: 10px; cursor: pointer; }
+  button:disabled { opacity: .6; cursor: progress; }
+  .err { color: var(--danger); min-height: 1.4em; font-size: 13px; }
+</style>
+</head>
+<body>
+<form id="f" autocomplete="off">
+  <h1>Etiquetas</h1>
+  <p>Escribe el PIN del taller. Este dispositivo quedará con la sesión abierta.</p>
+  <input id="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" autofocus aria-label="PIN">
+  <button id="go">Entrar</button>
+  <div class="err" id="err" role="alert"></div>
+</form>
+<script>
+const $ = s => document.querySelector(s);
+// Si ya hay sesión, directo al editor
+fetch('/api/config').then(r => { if (r.ok) location.replace('/'); });
+
+$('#f').onsubmit = async ev => {
+  ev.preventDefault();
+  const pin = $('#pin').value.trim();
+  if (!pin) return $('#pin').focus();
+  $('#go').disabled = true; $('#err').textContent = '';
+  try {
+    const r = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                                          body: JSON.stringify({ pin }) });
+    const j = await r.json().catch(() => ({}));
+    if (r.ok) return location.replace('/');
+    $('#err').textContent = j.error || `Error ${r.status}`;
+    $('#pin').value = ''; $('#pin').focus();
+  } catch (e) { $('#err').textContent = 'Sin conexión con el servidor'; }
+  finally { $('#go').disabled = false; }
+};
+</script>
+</body>
+</html>

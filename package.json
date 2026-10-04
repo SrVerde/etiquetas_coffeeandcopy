@@ -11,6 +11,7 @@
     "start": "node server.js",
     "imprimir": "node main.js",
     "calibrar": "node herramientas/calibracion.js",
+    "pin": "node herramientas/pin.js",
     "diagnose": "node diagnose-codepage.js"
   },
   "engines": {
