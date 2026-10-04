@@ -47,13 +47,13 @@ Repositorio: https://github.com/SrVerde/etiquetas_coffeeandcopy (rama `main`).
 - ✅ Tarea **"Servidor de etiquetas"** instalada (SYSTEM, al arrancar) y reglas de firewall creadas. Un usuario sin elevar no puede consultar la tarea (`Get-ScheduledTask`/`schtasks` → acceso denegado); para comprobarla, mira que el proceso node del puerto 80 tenga como padre `svchost` y revisa `logs\servidor.log`.
 - ✅ `actualizar.cmd`: `git pull --ff-only` como usuario normal y luego reinicia la tarea con UAC. Probado.
 - ✅ `http://etiquetas.local` responde en esta PC.
-- ⏳ **No se ha probado el acceso desde otra PC** de la red ni un reinicio de la PC.
+- ✅ Probado desde un celular en la red: `http://etiquetas.local` abre.
+- ⏳ Falta probar que el servidor arranca solo tras reiniciar la PC.
 
 ## Pendientes sugeridos
 
-1. Pedir al usuario que pruebe `http://etiquetas.local` desde otra PC o un celular.
-2. Reiniciar la PC y verificar que el servidor arranca solo.
-3. Opcional: reserva DHCP, ajustar el margen cuando se fije el rollo.
+1. Reiniciar la PC y verificar que el servidor arranca solo.
+2. Opcional: reserva DHCP, ajustar el margen cuando se fije el rollo.
 
 ## Cómo probar
 
