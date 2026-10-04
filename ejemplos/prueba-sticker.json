@@ -1,0 +1,179 @@
+{
+  "_comment": [
+    "Sticker: area de impresion 60 + 456 puntos = 38 columnas.",
+    "Las columnas de cada row deben sumar 38."
+  ],
+  "printer": {
+    "unc": "\\\\DESKTOP-973O2DT\\ticket",
+    "usb": false,
+    "codePage": 16,
+    "charSet": 8,
+    "marginLeftDots": 60,
+    "printWidthDots": 456,
+    "paperWidth": 38,
+    "padding": 0
+  },
+  "ticket": [
+    {
+      "type": "text",
+      "value": "PRUEBA STICKER",
+      "align": "center",
+      "bold": true,
+      "size": [
+        2,
+        2
+      ]
+    },
+    {
+      "type": "text",
+      "value": "Area 60+456 puntos / 38 col",
+      "align": "center"
+    },
+    {
+      "type": "separator",
+      "char": "="
+    },
+    {
+      "type": "text",
+      "value": "00000000011111111112222222222333333333"
+    },
+    {
+      "type": "text",
+      "value": "12345678901234567890123456789012345678"
+    },
+    {
+      "type": "separator"
+    },
+    {
+      "type": "text",
+      "value": "<IZQ",
+      "align": "left"
+    },
+    {
+      "type": "text",
+      "value": "CENTRO",
+      "align": "center"
+    },
+    {
+      "type": "text",
+      "value": "DER>",
+      "align": "right"
+    },
+    {
+      "type": "text",
+      "value": "DOBLE DER>",
+      "align": "right",
+      "bold": true,
+      "size": [
+        2,
+        1
+      ]
+    },
+    {
+      "type": "separator"
+    },
+    {
+      "type": "row",
+      "bold": true,
+      "columns": [
+        {
+          "text": "DESCRIPCION",
+          "width": 22
+        },
+        {
+          "text": "CANT",
+          "width": 6,
+          "align": "right"
+        },
+        {
+          "text": "TOTAL",
+          "width": 10,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "columns": [
+        {
+          "text": "Jamón ibérico",
+          "width": 22
+        },
+        {
+          "text": "1",
+          "width": 6,
+          "align": "right"
+        },
+        {
+          "text": "14.50",
+          "width": 10,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "columns": [
+        {
+          "text": "Café con leche",
+          "width": 22
+        },
+        {
+          "text": "3",
+          "width": 6,
+          "align": "right"
+        },
+        {
+          "text": "4.50",
+          "width": 10,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "separator"
+    },
+    {
+      "type": "row",
+      "bold": true,
+      "columns": [
+        {
+          "text": "TOTAL",
+          "width": 19
+        },
+        {
+          "text": "19.00",
+          "width": 19,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "separator"
+    },
+    {
+      "type": "barcode",
+      "value": "STICKER-38",
+      "height": 50,
+      "width": 2
+    },
+    {
+      "type": "feed",
+      "lines": 1
+    },
+    {
+      "type": "qr",
+      "value": "prueba sticker 38 col",
+      "module": 4
+    },
+    {
+      "type": "text",
+      "value": "FIN DE PRUEBA",
+      "align": "center",
+      "bold": true
+    },
+    {
+      "type": "cut"
+    }
+  ]
+}

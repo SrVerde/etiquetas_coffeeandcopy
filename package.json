@@ -1,0 +1,22 @@
+{
+  "name": "etiquetas-coffeeandcopy",
+  "version": "4.0.0",
+  "description": "Servidor LAN y librería ESC/POS para imprimir etiquetas en una impresora térmica genérica (POS80) — plantillas JSON, editor web, USB directo o cola compartida de Windows",
+  "type": "module",
+  "main": "printer.js",
+  "exports": {
+    ".": "./printer.js"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "imprimir": "node main.js",
+    "calibrar": "node herramientas/calibracion.js",
+    "diagnose": "node diagnose-codepage.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "sharp": "^0.34.5"
+  }
+}

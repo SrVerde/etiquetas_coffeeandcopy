@@ -1,0 +1,311 @@
+{
+  "_comment": [
+    "Sticker: marginLeftDots=60 + printWidthDots=456 -> 38 columnas (margenes por software).",
+    "All row column widths MUST sum to 38 (paperWidth, padding 0).",
+    "Transport: unc (local o desde otras PCs) o usb:true (solo en esta PC). CLI: --usb / --unc=..."
+  ],
+  "printer": {
+    "unc": "\\\\DESKTOP-973O2DT\\ticket",
+    "usb": false,
+    "codePage": 16,
+    "charSet": 8,
+    "marginLeftDots": 60,
+    "printWidthDots": 456,
+    "paperWidth": 38,
+    "padding": 0
+  },
+  "ticket": [
+    {
+      "type": "text",
+      "value": "RESTAURANTE EL PATIO",
+      "align": "center",
+      "bold": true,
+      "size": [
+        2,
+        2
+      ]
+    },
+    {
+      "type": "text",
+      "value": "C/ Gran Vía 42, Madrid",
+      "align": "center"
+    },
+    {
+      "type": "text",
+      "value": "Tel: 91 123 45 67",
+      "align": "center"
+    },
+    {
+      "type": "separator"
+    },
+    {
+      "type": "text",
+      "value": "TICKET DE VENTA",
+      "align": "center",
+      "bold": true,
+      "size": [
+        1,
+        2
+      ]
+    },
+    {
+      "type": "text",
+      "value": "Mesa 7  |  21/02/2026 21:35",
+      "align": "center"
+    },
+    {
+      "type": "separator"
+    },
+    {
+      "type": "row",
+      "bold": true,
+      "columns": [
+        {
+          "text": "DESCRIPCION",
+          "width": 22,
+          "align": "left"
+        },
+        {
+          "text": "CANT",
+          "width": 6,
+          "align": "right"
+        },
+        {
+          "text": "TOTAL",
+          "width": 10,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "separator",
+      "char": "-"
+    },
+    {
+      "type": "row",
+      "columns": [
+        {
+          "text": "Gazpacho andaluz",
+          "width": 22,
+          "align": "left"
+        },
+        {
+          "text": "2",
+          "width": 6,
+          "align": "right"
+        },
+        {
+          "text": "7.90",
+          "width": 10,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "columns": [
+        {
+          "text": "Jamón ibérico",
+          "width": 22,
+          "align": "left"
+        },
+        {
+          "text": "1",
+          "width": 6,
+          "align": "right"
+        },
+        {
+          "text": "14.50",
+          "width": 10,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "columns": [
+        {
+          "text": "Paella valenciana",
+          "width": 22,
+          "align": "left"
+        },
+        {
+          "text": "2",
+          "width": 6,
+          "align": "right"
+        },
+        {
+          "text": "24.00",
+          "width": 10,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "columns": [
+        {
+          "text": "Turrón Alicante",
+          "width": 22,
+          "align": "left"
+        },
+        {
+          "text": "3",
+          "width": 6,
+          "align": "right"
+        },
+        {
+          "text": "9.60",
+          "width": 10,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "columns": [
+        {
+          "text": "Café con leche",
+          "width": 22,
+          "align": "left"
+        },
+        {
+          "text": "3",
+          "width": 6,
+          "align": "right"
+        },
+        {
+          "text": "4.50",
+          "width": 10,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "separator"
+    },
+    {
+      "type": "row",
+      "columns": [
+        {
+          "text": "Base imponible",
+          "width": 28,
+          "align": "left"
+        },
+        {
+          "text": "51.24",
+          "width": 10,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "columns": [
+        {
+          "text": "IVA 10%",
+          "width": 28,
+          "align": "left"
+        },
+        {
+          "text": "5.76",
+          "width": 10,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "separator"
+    },
+    {
+      "type": "row",
+      "bold": true,
+      "size": [
+        1,
+        2
+      ],
+      "columns": [
+        {
+          "text": "TOTAL",
+          "width": 19,
+          "align": "left"
+        },
+        {
+          "text": "57.00",
+          "width": 19,
+          "align": "right"
+        }
+      ]
+    },
+    {
+      "type": "separator"
+    },
+    {
+      "type": "text",
+      "value": "Forma de pago: Tarjeta",
+      "align": "center"
+    },
+    {
+      "type": "text",
+      "value": "¡Gracias por su visita!",
+      "align": "center",
+      "bold": true
+    },
+    {
+      "type": "text",
+      "value": "Esperamos verle pronto",
+      "align": "center"
+    },
+    {
+      "type": "feed",
+      "lines": 1
+    },
+    {
+      "type": "separator"
+    },
+    {
+      "type": "text",
+      "value": "Pedido #2026-0221-007",
+      "align": "center"
+    },
+    {
+      "type": "barcode",
+      "value": "2026-0221-007",
+      "align": "center",
+      "height": 70,
+      "width": 2
+    },
+    {
+      "type": "feed",
+      "lines": 1
+    },
+    {
+      "type": "text",
+      "value": "Opinanos en Google:",
+      "align": "center"
+    },
+    {
+      "type": "qr",
+      "value": "https://g.page/restaurante-el-patio/review",
+      "align": "center",
+      "module": 5,
+      "errorCorrection": "M"
+    },
+    {
+      "type": "feed",
+      "lines": 1
+    },
+    {
+      "type": "text",
+      "value": "www.restauranteelpatio.es",
+      "align": "center"
+    },
+    {
+      "type": "image",
+      "path": "image.png"
+    },
+    {
+      "type": "cut"
+    }
+  ]
+}

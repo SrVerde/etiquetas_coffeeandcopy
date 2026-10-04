@@ -1,0 +1,32 @@
+{
+  "printer": {
+    "unc": "\\\\DESKTOP-973O2DT\\ticket",
+    "usb": false,
+    "codePage": 16,
+    "charSet": 8,
+    "marginLeftDots": 60,
+    "printWidthDots": 456,
+    "paperWidth": 38,
+    "padding": 0
+  },
+  "ticket": [
+    {
+      "type": "text",
+      "value": "hola que hace",
+      "align": "center"
+    },
+    {
+      "type": "separator",
+      "char": "-"
+    },
+    {
+      "type": "feed",
+      "lines": 1
+    },
+    {
+      "type": "image",
+      "path": "image.png",
+      "align": "center"
+    }
+  ]
+}

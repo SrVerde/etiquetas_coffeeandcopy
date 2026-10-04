@@ -1,0 +1,21 @@
+# Dependencias
+node_modules/
+
+# Datos locales del servidor
+logs/
+
+# Respaldos de editores (vim, etc.)
+*~
+*.un~
+.*.un~
+*.swp
+
+# Binarios y archivos generados
+*.bin
+*.rar
+*.zip
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store

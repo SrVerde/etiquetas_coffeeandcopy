@@ -1,0 +1,64 @@
+{
+  "printer": {
+    "unc": "\\\\localhost\\ticket",
+    "codePage": 16,
+    "charSet": 8,
+    "marginLeftDots": 60,
+    "printWidthDots": 456,
+    "paperWidth": 38,
+    "padding": 0
+  },
+  "ticket": [
+    {
+      "type": "text",
+      "value": "{{producto}}",
+      "align": "center",
+      "size": [
+        2,
+        2
+      ],
+      "bold": true
+    },
+    {
+      "type": "separator",
+      "char": "-"
+    },
+    {
+      "type": "text",
+      "value": "Precio",
+      "align": "left",
+      "size": [
+        1,
+        1
+      ],
+      "bold": false
+    },
+    {
+      "type": "text",
+      "value": "${{precio}}",
+      "align": "right",
+      "size": [
+        2,
+        2
+      ],
+      "bold": true
+    },
+    {
+      "type": "feed",
+      "lines": 1
+    },
+    {
+      "type": "text",
+      "value": "Gracias por su compra",
+      "align": "center",
+      "size": [
+        1,
+        1
+      ],
+      "bold": false
+    },
+    {
+      "type": "cut"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "port": 80,
+  "mdnsName": "etiquetas",
+  "transport": "usb",
+  "usbMatch": "vid_0416&pid_5011",
+  "maxCopies": 100,
+  "printer": {
+    "unc": "\\\\localhost\\ticket",
+    "codePage": 16,
+    "charSet": 8,
+    "marginLeftDots": 60,
+    "printWidthDots": 456,
+    "paperWidth": 38,
+    "padding": 0
+  }
+}
