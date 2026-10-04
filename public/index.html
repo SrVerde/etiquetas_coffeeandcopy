@@ -7,196 +7,168 @@
 <style>
   :root {
     --bg: #f3f2ef; --panel: #ffffff; --ink: #1d1d1b; --muted: #6d6a64; --line: #e2dfd8;
-    --accent: #1f5f5b; --accent-ink: #ffffff; --accent-soft: #e3efed; --danger: #a33a2c;
+    --accent: #1f5f5b; --accent-ink: #ffffff; --accent-soft: #e3efed; --danger: #a33a2c; --ok: #2e7d4f;
     --paper: #fffefa; --lh: 1.38em;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--ink);
-    font: 14px/1.4 system-ui, "Segoe UI", Roboto, sans-serif; }
-  button, input, select { font: inherit; color: inherit; }
+    font: 16px/1.4 system-ui, "Segoe UI", Roboto, sans-serif; }
+  button, input { font: inherit; color: inherit; }
 
-  /* ── Top bar ─────────────────────────────────────────── */
-  header { position: sticky; top: 0; z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line);
-    display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; padding: 10px 16px; }
-  header h1 { font-size: 16px; margin: 0 8px 0 0; letter-spacing: .02em; }
-  .group { display: flex; gap: 6px; align-items: center; }
-  .grow { flex: 1; }
-  label.small { font-size: 12px; color: var(--muted); }
-  input[type=text], input[type=number], select {
-    border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; background: #fff; min-width: 0; }
-  input[type=number] { width: 64px; }
-  .btn { border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
-  .btn:hover { border-color: #c9c4b9; }
-  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; padding: 7px 18px; }
-  .btn.primary:hover { filter: brightness(1.08); }
-  .btn.primary:disabled { opacity: .6; cursor: progress; }
-  .btn.ghost { border-color: transparent; background: transparent; padding: 4px 7px; color: var(--muted); }
-  .btn.ghost:hover { background: var(--bg); color: var(--ink); }
-  .btn.danger:hover { color: var(--danger); }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; }
+  header h1 { font-size: 18px; margin: 0; letter-spacing: .02em; }
+  .adv { color: var(--muted); font-size: 13px; text-decoration: none; padding: 6px 8px; border-radius: 6px; }
+  .adv:hover { background: var(--panel); color: var(--ink); }
 
-  /* ── Layout ──────────────────────────────────────────── */
-  main { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; padding: 16px; max-width: 1300px; margin: 0 auto; }
-  @media (max-width: 900px) { main { grid-template-columns: 1fr; } .preview-wrap { position: static !important; } }
+  main { max-width: 560px; margin: 0 auto; padding: 0 16px 32px; display: grid; gap: 18px; }
 
-  /* ── Element list ────────────────────────────────────── */
-  .list { display: flex; flex-direction: column; gap: 8px; }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: grid; gap: 8px; }
-  .card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
-  .card .row1 { display: flex; gap: 8px; align-items: center; }
-  .card .row1 input[type=text] { flex: 1; }
-  .card .row2 { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .tag { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); min-width: 64px; }
-  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
-  .seg button { border: 0; border-right: 1px solid var(--line); background: #fff; padding: 5px 9px; cursor: pointer; font-size: 13px; }
-  .seg button:last-child { border-right: 0; }
-  .seg button[aria-pressed=true] { background: var(--accent); color: var(--accent-ink); }
-  .seg button:hover:not([aria-pressed=true]) { background: var(--bg); }
-  .tools { margin-left: auto; display: flex; gap: 2px; }
-  .add { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-  .add .btn { border-style: dashed; }
-  .empty { color: var(--muted); padding: 20px; text-align: center; border: 1px dashed var(--line); border-radius: 8px; }
+  /* ── Campos ──────────────────────────────────────────── */
+  .fields { display: grid; gap: 14px; }
+  .field { display: grid; gap: 6px; }
+  .field .lbl { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .field .name { font-size: 18px; font-weight: 600; }
+  .field .hint { font-size: 13px; color: var(--muted); }
+  .field input { width: 100%; font-size: 30px; font-weight: 600; padding: 14px 16px; border: 2px solid #c9c4b9;
+    border-radius: 10px; background: #fff; min-width: 0; }
+  .field input::placeholder { color: #b9b3a7; font-weight: 400; }
+  .field input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
 
-  .vars { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin-bottom: 12px; display: none; }
-  .vars.show { display: block; }
-  .vars h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
-  .vars .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
-  .vars label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+  /* ── Botón imprimir ──────────────────────────────────── */
+  #btnPrint { width: 100%; border: 0; border-radius: 12px; padding: 18px; font-size: 24px; font-weight: 700;
+    background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+  #btnPrint:hover { filter: brightness(1.08); }
+  #btnPrint:disabled { opacity: .7; cursor: progress; }
+  #btnPrint.ok { background: var(--ok); }
+  .msg { min-height: 1.4em; margin: -8px 0 0; text-align: center; font-size: 15px; }
+  .msg.err { color: var(--danger); font-weight: 600; }
 
-  /* ── Preview ─────────────────────────────────────────── */
-  .preview-wrap { position: sticky; top: 72px; align-self: start; }
-  .preview-wrap .cap { font-size: 12px; color: var(--muted); margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; }
-  .liner { background: #ebe7dc; padding: 14px 10px; border-radius: 6px; }
-  .sticker { background: var(--paper); border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.12);
-    padding: 14px 12px; font-family: Consolas, "Cascadia Mono", "Courier New", monospace; font-size: 15px; }
+  /* ── Vista previa (igual que en Avanzado) ────────────── */
+  .cap { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+  .liner { background: #ebe7dc; padding: 14px 10px; border-radius: 6px; overflow-x: auto; }
+  .sticker { background: var(--paper); border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.12); margin: 0 auto;
+    width: max-content; padding: 14px 12px; font-family: Consolas, "Cascadia Mono", "Courier New", monospace; font-size: 13px; }
   .paper { width: calc(var(--cols) * 1ch); }
-  .ln { height: var(--lh); line-height: var(--lh); white-space: pre; overflow: visible; cursor: pointer; }
-  .ln:hover { background: var(--accent-soft); }
-  .ln.sel { background: var(--accent-soft); }
+  .ln { height: var(--lh); line-height: var(--lh); white-space: pre; overflow: visible; }
   .ln .sp { display: inline-block; }
   .ln .box { display: inline-block; vertical-align: top; overflow: visible; }
   .ln .box > span { display: inline-block; transform-origin: 0 0; line-height: var(--lh); }
   .ln.b { font-weight: 700; }
+  .ph { color: #b9b3a7; }
   .bc { margin: 4px auto; text-align: center; font-size: 12px; }
   .bc .bars { height: 40px; margin: 0 auto 2px; width: 70%;
     background: repeating-linear-gradient(90deg, #1d1d1b 0 2px, transparent 2px 4px, #1d1d1b 4px 5px, transparent 5px 8px); }
   .qr { width: 90px; height: 90px; margin: 4px auto; border: 6px solid #1d1d1b; display: grid; place-items: center; font-size: 12px; }
   .cut { border-top: 1px dashed #b8b2a5; margin: 10px -12px 0; position: relative; height: 0; }
   .cut::after { content: "✂"; position: absolute; right: -2px; top: -11px; font-size: 13px; color: #9a9385; }
-  .warn { color: var(--danger); }
-
-  /* ── Toast ───────────────────────────────────────────── */
-  .toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--ink); color: #fff;
-    padding: 8px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; }
-  .toast.show { opacity: 1; }
-  .toast.err { background: var(--danger); }
 </style>
 </head>
 <body>
 <header>
   <h1>Etiquetas</h1>
-  <div class="group">
-    <select id="tplSelect" title="Abrir plantilla"><option value="">Abrir plantilla…</option></select>
-    <input id="tplName" type="text" placeholder="nombre de la plantilla" size="18">
-    <button class="btn" id="btnSave" title="Guardar (Ctrl+S)">Guardar</button>
-    <button class="btn" id="btnNew">Nueva</button>
-    <button class="btn ghost danger" id="btnDelete" title="Eliminar plantilla">Eliminar</button>
-  </div>
-  <div class="grow"></div>
-  <div class="group">
-    <label class="small" for="copies">Copias</label>
-    <input id="copies" type="number" min="1" value="1">
-    <label class="small" for="transport">Envío</label>
-    <select id="transport">
-      <option value="usb">USB directo</option>
-      <option value="unc">Cola compartida</option>
-    </select>
-    <button class="btn primary" id="btnPrint" title="Imprimir (Ctrl+P)">Imprimir</button>
-    <button class="btn ghost" id="btnLogout" title="Cerrar la sesión en este dispositivo">Salir</button>
-  </div>
+  <a class="adv" href="/avanzado.html" title="Editar plantillas">Avanzado</a>
 </header>
 
 <main>
+  <form class="fields" id="fields" autocomplete="off"></form>
+
+  <button id="btnPrint" type="button">Imprimir</button>
+  <p class="msg" id="msg" role="status"></p>
+
   <section>
-    <div class="vars" id="vars">
-      <h2>Datos de esta impresión</h2>
-      <div class="grid" id="varsGrid"></div>
-    </div>
-    <div class="list" id="list"></div>
-    <div class="add">
-      <button class="btn" data-add="text">+ Texto</button>
-      <button class="btn" data-add="separator">+ Separador</button>
-      <button class="btn" data-add="feed">+ Espacio</button>
-    </div>
-    <p class="small" style="color:var(--muted);margin-top:14px">
-      Escribe <code>{{campo}}</code> en un texto para pedir el dato al imprimir (p. ej. <code>{{precio}}</code>).
-    </p>
-  </section>
-
-  <aside class="preview-wrap">
-    <p class="cap"><span>Vista previa</span><span id="capInfo"></span></p>
+    <p class="cap">Así se verá:</p>
     <div class="liner"><div class="sticker"><div class="paper" id="paper"></div></div></div>
-  </aside>
+  </section>
 </main>
-
-<div class="toast" id="toast"></div>
 
 <script>
 'use strict';
 const $ = s => document.querySelector(s);
-const SIZES = [ { k: 'Normal', v: [1,1] }, { k: 'Ancho', v: [2,1] }, { k: 'Alto', v: [1,2] },
-                { k: 'Grande', v: [2,2] }, { k: 'Enorme', v: [3,3] } ];
-const ALIGNS = [ { k: 'Izq', v: 'left', t: 'Izquierda' }, { k: 'Centro', v: 'center', t: 'Centro' }, { k: 'Der', v: 'right', t: 'Derecha' } ];
+const VAR_RE = /\{\{\s*([\w.-]+)\s*\}\}/g;
+// Variables automáticas: las llena el servidor al imprimir; aquí solo se muestran
+function autoVars(d = new Date()) {
+  const p = n => String(n).padStart(2, '0');
+  const fecha = `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`, hora = `${p(d.getHours())}:${p(d.getMinutes())}`;
+  return { fecha, hora, fecha_hora: `${fecha} ${hora}` };
+}
+const AUTO = Object.keys(autoVars());
+const SIZE_NAMES = { '1x1': 'Letra normal', '2x1': 'Letra ancha', '1x2': 'Letra alta', '2x2': 'Letra grande', '3x3': 'Letra enorme' };
 
 let COLS = 38;
-let state = { name: '', ticket: [], data: {} };
-let selected = -1;
+let home = { template: null, ticket: [] };
+let fields = [];          // [{ key, label, hint }]
+const data = {};
 
-const store = {
-  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
-};
+// "precio_venta" → "Precio venta"
+const humanize = k => { const s = k.replace(/[_.-]+/g, ' ').trim(); return s.charAt(0).toUpperCase() + s.slice(1); };
 
-const defaultTicket = () => ([
-  { type: 'text', value: '{{producto}}', align: 'center', size: [2,2], bold: true },
-  { type: 'separator', char: '-' },
-  { type: 'text', value: 'Precio', align: 'left', size: [1,1], bold: false },
-  { type: 'text', value: '${{precio}}', align: 'right', size: [2,2], bold: true },
-  { type: 'feed', lines: 1 },
-  { type: 'text', value: 'Gracias por su compra', align: 'center', size: [1,1], bold: false },
-]);
-
-// ── Layout helpers (mirror printer.js) ───────────────────────────────────
-function wrapWords(text, width) {
-  if (width <= 0) return [''];
-  const lines = []; let cur = '';
-  for (const word of String(text ?? '').split(' ')) {
-    let token = word;
-    while (token.length > width) { if (cur) { lines.push(cur); cur = ''; } lines.push(token.slice(0, width)); token = token.slice(width); }
-    if (!token) continue;
-    const test = cur ? cur + ' ' + token : token;
-    if (test.length > width) { if (cur) lines.push(cur); cur = token; } else cur = test;
+/** Campos de la plantilla, en orden de aparición, con el tipo de letra donde se usan. */
+function fieldsOf(ticket) {
+  const out = new Map();
+  for (const e of ticket) {
+    const texts = [e.value, e.char, ...(e.columns ?? []).map(c => c.text)];
+    for (const t of texts) for (const m of String(t ?? '').matchAll(VAR_RE)) {
+      if (out.has(m[1]) || AUTO.includes(m[1])) continue;
+      let hint = 'Letra normal';
+      if (e.type === 'text') {
+        const [w, h] = e.size ?? [1, 1];
+        hint = SIZE_NAMES[`${w}x${h}`] ?? `Letra ${w}×${h}`;
+        if (w > 1) hint += ` · ${Math.floor(COLS / w)} letras por línea`;
+      } else if (e.type === 'barcode') hint = 'Código de barras';
+      else if (e.type === 'qr') hint = 'Código QR';
+      out.set(m[1], { key: m[1], label: humanize(m[1]), hint });
+    }
   }
-  if (cur) lines.push(cur);
-  return lines.length ? lines : [''];
+  return [...out.values()];
 }
-const fill = s => String(s ?? '').replace(/\{\{\s*([\w.-]+)\s*\}\}/g, (m, k) => (state.data[k] ? state.data[k] : m));
-const varsIn = t => {
-  const set = new Set();
-  for (const el of t) for (const s of [el.value, el.char, ...(el.columns ?? []).map(c => c.text)])
-    for (const m of String(s ?? '').matchAll(/\{\{\s*([\w.-]+)\s*\}\}/g)) set.add(m[1]);
-  return [...set];
-};
 
-// ── Preview ──────────────────────────────────────────────────────────────
+/** Texto → lista de letras; las de un campo vacío se marcan como placeholder. */
+function richText(value) {
+  const chars = [];
+  let last = 0;
+  const push = (s, ph) => { for (const ch of s) chars.push({ ch, ph }); };
+  const auto = autoVars();
+  for (const m of String(value ?? '').matchAll(VAR_RE)) {
+    push(value.slice(last, m.index), false);
+    const v = AUTO.includes(m[1]) ? auto[m[1]] : data[m[1]];
+    if (v) push(v, false); else push(humanize(m[1]), true);
+    last = m.index + m[0].length;
+  }
+  push(String(value ?? '').slice(last), false);
+  return chars;
+}
+const plain = value => richText(value).map(c => c.ch).join('');
+
+/** Igual que wrapWords de printer.js, pero conservando la marca de cada letra. */
+function wrapRich(chars, width) {
+  if (width <= 0) return [[]];
+  const words = [[]];
+  for (const c of chars) c.ch === ' ' ? words.push([]) : words.at(-1).push(c);
+  const lines = []; let cur = [];
+  for (let token of words) {
+    while (token.length > width) { if (cur.length) { lines.push(cur); cur = []; } lines.push(token.slice(0, width)); token = token.slice(width); }
+    if (!token.length) continue;
+    if (cur.length && cur.length + 1 + token.length > width) { lines.push(cur); cur = token; }
+    else cur = cur.length ? [...cur, { ch: ' ', ph: cur.at(-1).ph && token[0].ph }, ...token] : token;
+  }
+  if (cur.length) lines.push(cur);
+  return lines.length ? lines : [[]];
+}
+
+// ── Vista previa ─────────────────────────────────────────────────────────
 function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
 
-function line(idx, { lead = 0, text = '', sw = 1, sh = 1, bold = false }) {
-  const d = el('div', 'ln' + (bold ? ' b' : '') + (idx === selected ? ' sel' : ''));
+function line({ lead = 0, chars = [], sw = 1, sh = 1, bold = false }) {
+  const d = el('div', 'ln' + (bold ? ' b' : ''));
   d.style.height = `calc(var(--lh) * ${sh})`;
-  d.dataset.idx = idx;
   const sp = el('span', 'sp'); sp.style.width = lead + 'ch'; d.append(sp);
-  const box = el('span', 'box'); box.style.width = (text.length * sw) + 'ch'; box.style.height = `calc(var(--lh) * ${sh})`;
-  const inner = el('span', null, text); inner.style.transform = `scale(${sw}, ${sh})`;
+  const box = el('span', 'box'); box.style.width = (chars.length * sw) + 'ch'; box.style.height = `calc(var(--lh) * ${sh})`;
+  const inner = el('span'); inner.style.transform = `scale(${sw}, ${sh})`;
+  // agrupa letras seguidas con la misma marca
+  for (let i = 0; i < chars.length;) {
+    let j = i; while (j < chars.length && chars[j].ph === chars[i].ph) j++;
+    inner.append(el('span', chars[i].ph ? 'ph' : null, chars.slice(i, j).map(c => c.ch).join('')));
+    i = j;
+  }
   box.append(inner); d.append(box);
   return d;
 }
@@ -205,165 +177,55 @@ function renderPreview() {
   const paper = $('#paper');
   paper.style.setProperty('--cols', COLS);
   paper.replaceChildren();
-  let lines = 0, warn = '';
-  state.ticket.forEach((e, i) => {
+  for (const e of home.ticket) {
     switch (e.type) {
       case 'text': {
-        const [sw, sh] = e.size ?? [1,1];
-        const budget = Math.max(1, Math.floor(COLS / sw));
-        for (const ln of wrapWords(fill(e.value), budget)) {
-          const free = Math.max(0, COLS - ln.length * sw);
+        const [sw, sh] = e.size ?? [1, 1];
+        for (const chars of wrapRich(richText(e.value), Math.max(1, Math.floor(COLS / sw)))) {
+          const free = Math.max(0, COLS - chars.length * sw);
           const lead = e.align === 'right' ? free : e.align === 'center' ? Math.floor(free / 2) : 0;
-          paper.append(line(i, { lead, text: ln, sw, sh, bold: e.bold })); lines += sh;
+          paper.append(line({ lead, chars, sw, sh, bold: e.bold }));
         }
         break;
       }
-      case 'separator': paper.append(line(i, { text: (e.char || '-')[0].repeat(COLS) })); lines++; break;
-      case 'feed': for (let k = 0; k < (e.lines || 1); k++) { paper.append(line(i, {})); lines++; } break;
+      case 'separator': paper.append(line({ chars: richText((e.char || '-')[0].repeat(COLS)) })); break;
+      case 'feed': for (let k = 0; k < (e.lines || 1); k++) paper.append(line({})); break;
       case 'row': {
-        const sum = (e.columns ?? []).reduce((a, c) => a + (c.width | 0), 0);
-        if (sum !== COLS) warn = `Una fila suma ${sum} columnas (deben ser ${COLS})`;
         const txt = (e.columns ?? []).map(c => {
-          const s = (wrapWords(fill(c.text), c.width)[0] ?? '').slice(0, c.width), pad = c.width - s.length;
+          const s = plain(c.text).slice(0, c.width), pad = c.width - s.length;
           return c.align === 'right' ? s.padStart(c.width) : c.align === 'center' ? ' '.repeat(pad >> 1) + s + ' '.repeat(pad - (pad >> 1)) : s.padEnd(c.width);
         }).join('');
-        paper.append(line(i, { text: txt, bold: e.bold })); lines++; break;
+        paper.append(line({ chars: [...txt].map(ch => ({ ch, ph: false })), bold: e.bold })); break;
       }
-      case 'barcode': { const b = el('div', 'bc'); b.dataset.idx = i; b.append(el('div', 'bars'), el('div', null, fill(e.value))); paper.append(b); break; }
-      case 'qr': { const q = el('div', 'qr', 'QR'); q.dataset.idx = i; paper.append(q); break; }
+      case 'barcode': { const b = el('div', 'bc'); b.append(el('div', 'bars'), el('div', null, plain(e.value))); paper.append(b); break; }
+      case 'qr': paper.append(el('div', 'qr', 'QR')); break;
       case 'cut': paper.append(el('div', 'cut')); break;
     }
-  });
-  if (!state.ticket.some(e => e.type === 'cut')) paper.append(el('div', 'cut'));
-  const info = $('#capInfo');
-  info.textContent = warn || `${COLS} columnas · ${lines} líneas`;
-  info.className = warn ? 'warn' : '';
-}
-
-// ── Editor ───────────────────────────────────────────────────────────────
-function seg(options, current, onPick, eq = (a, b) => a === b) {
-  const s = el('div', 'seg');
-  for (const o of options) {
-    const b = el('button', null, o.k); b.type = 'button'; b.title = o.t || o.k;
-    b.setAttribute('aria-pressed', eq(o.v, current) ? 'true' : 'false');
-    b.onclick = () => onPick(o.v);
-    s.append(b);
   }
-  return s;
-}
-function toolBtn(label, title, fn, extra = '') { const b = el('button', 'btn ghost ' + extra, label); b.type = 'button'; b.title = title; b.onclick = fn; return b; }
-
-function update(i, patch, rerenderList = false) {
-  Object.assign(state.ticket[i], patch);
-  changed(rerenderList);
-}
-function changed(rerenderList = true) {
-  store.set('draft', state);
-  if (rerenderList) renderList();
-  renderVars();
-  renderPreview();
+  if (!home.ticket.some(e => e.type === 'cut')) paper.append(el('div', 'cut'));
 }
 
-function renderList() {
-  const list = $('#list');
-  list.replaceChildren();
-  if (!state.ticket.length) { list.append(el('div', 'empty', 'Etiqueta vacía. Agrega un texto para empezar.')); return; }
-  state.ticket.forEach((e, i) => {
-    const c = el('div', 'card' + (i === selected ? ' selected' : ''));
-    c.dataset.idx = i;
-    c.addEventListener('focusin', () => select(i, false));
-    const tools = el('div', 'tools');
-    tools.append(
-      toolBtn('↑', 'Subir', () => move(i, -1)),
-      toolBtn('↓', 'Bajar', () => move(i, 1)),
-      toolBtn('⧉', 'Duplicar', () => { state.ticket.splice(i + 1, 0, structuredClone(e)); selected = i + 1; changed(); }),
-      toolBtn('✕', 'Eliminar', () => { state.ticket.splice(i, 1); selected = -1; changed(); }, 'danger'),
-    );
-
-    if (e.type === 'text') {
-      const r1 = el('div', 'row1');
-      const inp = el('input'); inp.type = 'text'; inp.value = e.value ?? ''; inp.placeholder = 'Texto…';
-      inp.oninput = () => update(i, { value: inp.value });
-      r1.append(inp, tools);
-      const r2 = el('div', 'row2');
-      r2.append(
-        seg(SIZES, e.size ?? [1,1], v => update(i, { size: v }, true), (a, b) => a[0] === b[0] && a[1] === b[1]),
-        seg(ALIGNS, e.align ?? 'left', v => update(i, { align: v }, true)),
-        seg([{ k: 'B', v: true, t: 'Negrita' }], !!e.bold, () => update(i, { bold: !e.bold }, true)),
-      );
-      r2.querySelector('.seg:last-child button').style.fontWeight = '700';
-      c.append(r1, r2);
-    } else if (e.type === 'separator') {
-      const r1 = el('div', 'row1');
-      const inp = el('input'); inp.type = 'text'; inp.value = e.char ?? '-'; inp.maxLength = 1; inp.style.width = '48px'; inp.style.flex = '0 0 auto';
-      inp.title = 'Carácter del separador';
-      inp.oninput = () => update(i, { char: inp.value || '-' });
-      r1.append(el('span', 'tag', 'Separador'), inp, el('span', 'grow'), tools);
-      c.append(r1);
-    } else if (e.type === 'feed') {
-      const r1 = el('div', 'row1');
-      const inp = el('input'); inp.type = 'number'; inp.min = 1; inp.max = 20; inp.value = e.lines ?? 1;
-      inp.oninput = () => update(i, { lines: Math.max(1, Math.min(20, inp.value | 0)) });
-      r1.append(el('span', 'tag', 'Espacio'), inp, el('span', 'small', 'línea(s)'), el('span', 'grow'), tools);
-      c.append(r1);
-    } else {
-      const r1 = el('div', 'row1');
-      r1.append(el('span', 'tag', e.type), el('span', 'small', 'Se imprime tal cual (edítalo en el JSON)'), el('span', 'grow'), tools);
-      c.append(r1);
-    }
-    list.append(c);
-  });
-}
-
-function renderVars() {
-  const names = varsIn(state.ticket);
-  const box = $('#vars'), grid = $('#varsGrid');
-  box.classList.toggle('show', names.length > 0);
-  const existing = new Map([...grid.querySelectorAll('input')].map(i => [i.name, i]));
-  if (names.length === existing.size && names.every(n => existing.has(n))) return;   // keep focus while typing
-  grid.replaceChildren();
-  for (const n of names) {
-    const l = el('label', null, n);
-    const inp = el('input'); inp.type = 'text'; inp.name = n; inp.value = state.data[n] ?? '';
-    inp.oninput = () => { state.data[n] = inp.value; store.set('draft', state); renderPreview(); };
-    l.append(inp); grid.append(l);
+// ── Campos ───────────────────────────────────────────────────────────────
+function renderFields() {
+  const form = $('#fields');
+  form.replaceChildren();
+  for (const f of fields) {
+    const wrap = el('label', 'field');
+    const lbl = el('span', 'lbl');
+    lbl.append(el('span', 'name', f.label), el('span', 'hint', f.hint));
+    const inp = el('input'); inp.type = 'text'; inp.name = f.key; inp.placeholder = f.label;
+    inp.maxLength = 300; inp.enterKeyHint = 'go';
+    inp.oninput = () => { data[f.key] = inp.value; setMsg(''); renderPreview(); };
+    wrap.append(lbl, inp);
+    form.append(wrap);
   }
+  form.onsubmit = ev => { ev.preventDefault(); print(); };   // Enter imprime
+  form.querySelector('input')?.focus();
 }
 
-function move(i, d) {
-  const j = i + d; if (j < 0 || j >= state.ticket.length) return;
-  [state.ticket[i], state.ticket[j]] = [state.ticket[j], state.ticket[i]];
-  selected = j; changed();
-}
-function select(i, focus = true) {
-  if (selected === i) return;
-  selected = i;
-  document.querySelectorAll('.card').forEach(c => c.classList.toggle('selected', +c.dataset.idx === i));
-  renderPreview();
-  if (focus) {
-    const card = document.querySelector(`.card[data-idx="${i}"]`);
-    card?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    card?.querySelector('input')?.focus();
-  }
-}
-$('#paper').addEventListener('click', ev => {
-  const n = ev.target.closest('[data-idx]'); if (n) select(+n.dataset.idx);
-});
-document.querySelectorAll('[data-add]').forEach(b => b.onclick = () => {
-  const t = b.dataset.add;
-  const item = t === 'text' ? { type: 'text', value: '', align: 'left', size: [1,1], bold: false }
-             : t === 'separator' ? { type: 'separator', char: '-' } : { type: 'feed', lines: 1 };
-  const at = selected >= 0 ? selected + 1 : state.ticket.length;
-  state.ticket.splice(at, 0, item); selected = at; changed();
-  if (t === 'text') document.querySelector(`.card[data-idx="${at}"] input`)?.focus();
-});
+// ── Imprimir ─────────────────────────────────────────────────────────────
+function setMsg(text, err = false) { const m = $('#msg'); m.textContent = text; m.className = 'msg' + (err ? ' err' : ''); }
 
-// ── Server I/O ───────────────────────────────────────────────────────────
-let toastTimer;
-function toast(msg, err = false) {
-  const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : '');
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = 'toast' + (err ? ' err' : ''), err ? 6000 : 2500);
-}
 async function api(path, opts = {}) {
   const r = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
   const j = await r.json().catch(() => ({}));
@@ -371,91 +233,43 @@ async function api(path, opts = {}) {
   if (!r.ok) throw new Error(j.error || `Error ${r.status}`);
   return j;
 }
-$('#btnLogout').onclick = async () => {
-  if (!confirm('¿Cerrar la sesión en este dispositivo? Habrá que escribir el PIN otra vez.')) return;
-  await api('/api/logout', { method: 'POST' }).catch(() => {});
-  location.href = '/login.html';
-};
-async function refreshTemplates(selectName) {
-  const names = await api('/api/templates');
-  const s = $('#tplSelect');
-  s.replaceChildren(new Option('Abrir plantilla…', ''));
-  for (const n of names) s.append(new Option(n, n));
-  s.value = selectName && names.includes(selectName) ? selectName : '';
-}
 
-$('#tplSelect').onchange = async ev => {
-  const name = ev.target.value; if (!name) return;
-  try {
-    const tpl = await api('/api/templates/' + encodeURIComponent(name));
-    state = { name, ticket: tpl.ticket ?? [], data: {} };
-    // the cut at the end is implicit
-    if (state.ticket.at(-1)?.type === 'cut' && !state.ticket.at(-1).feed) state.ticket.pop();
-    selected = -1; $('#tplName').value = name; changed();
-    toast(`Plantilla "${name}" abierta`);
-  } catch (e) { toast(e.message, true); }
-};
-async function save() {
-  const name = $('#tplName').value.trim();
-  if (!name) { $('#tplName').focus(); return toast('Escribe un nombre para la plantilla', true); }
-  try {
-    await api('/api/templates/' + encodeURIComponent(name), { method: 'PUT', body: JSON.stringify({ ticket: state.ticket }) });
-    state.name = name; store.set('draft', state);
-    await refreshTemplates(name);
-    toast(`Guardada: ${name}`);
-  } catch (e) { toast(e.message, true); }
-}
-$('#btnSave').onclick = save;
-$('#btnNew').onclick = () => {
-  state = { name: '', ticket: [{ type: 'text', value: '', align: 'center', size: [1,1], bold: false }], data: {} };
-  selected = 0; $('#tplName').value = ''; $('#tplSelect').value = ''; changed();
-  document.querySelector('.card input')?.focus();
-};
-$('#btnDelete').onclick = async () => {
-  const name = $('#tplName').value.trim(); if (!name) return;
-  if (!confirm(`¿Eliminar la plantilla "${name}"?`)) return;
-  try { await api('/api/templates/' + encodeURIComponent(name), { method: 'DELETE' }); await refreshTemplates(); toast('Plantilla eliminada'); }
-  catch (e) { toast(e.message, true); }
-};
-
+let busy = false;
 async function print() {
-  const missing = varsIn(state.ticket).filter(n => !state.data[n]);
-  if (missing.length) {
-    toast(`Falta llenar: ${missing.join(', ')}`, true);
-    document.querySelector(`#varsGrid input[name="${missing[0]}"]`)?.focus();
+  if (busy) return;
+  if (fields.length && fields.every(f => !String(data[f.key] ?? '').trim())) {
+    setMsg(`Escribe ${fields.length > 1 ? 'algo en los campos' : 'el texto'} antes de imprimir`, true);
+    $('#fields input')?.focus();
     return;
   }
-  const btn = $('#btnPrint'); btn.disabled = true; btn.textContent = 'Imprimiendo…';
+  busy = true;
+  const btn = $('#btnPrint'); btn.disabled = true; btn.textContent = 'Imprimiendo…'; setMsg('');
+  // los campos vacíos se imprimen en blanco, nunca como {{campo}}
+  const values = Object.fromEntries(fields.map(f => [f.key, String(data[f.key] ?? '').trim()]));
   try {
-    const copies = Math.max(1, $('#copies').value | 0);
-    const r = await api('/api/print', { method: 'POST', body: JSON.stringify({
-      ticket: state.ticket, data: state.data, copies, transport: $('#transport').value }) });
-    toast(`Enviado: ${r.copies} etiqueta(s) por ${r.transport === 'usb' ? 'USB' : 'cola compartida'}`);
-  } catch (e) { toast('No se pudo imprimir: ' + e.message, true); }
-  finally { btn.disabled = false; btn.textContent = 'Imprimir'; }
+    await api('/api/print', { method: 'POST', body: JSON.stringify(
+      home.template ? { template: home.template, data: values } : { ticket: home.ticket, data: values }) });
+    btn.classList.add('ok'); btn.textContent = '✓ Listo';
+    setTimeout(() => { btn.classList.remove('ok'); btn.textContent = 'Imprimir'; }, 2000);
+    $('#fields input')?.select();   // para escribir la siguiente encima
+  } catch (e) {
+    btn.textContent = 'Imprimir';
+    setMsg('No se pudo imprimir. Revisa que la impresora esté encendida y con papel. (' + e.message + ')', true);
+  } finally { btn.disabled = false; busy = false; }
 }
 $('#btnPrint').onclick = print;
-$('#transport').onchange = ev => store.set('transport', ev.target.value);
-document.addEventListener('keydown', ev => {
-  if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 's') { ev.preventDefault(); save(); }
-  if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 'p') { ev.preventDefault(); print(); }
-});
 
-// ── Start ────────────────────────────────────────────────────────────────
+// ── Inicio ───────────────────────────────────────────────────────────────
 (async () => {
-  const draft = store.get('draft');
-  state = draft && Array.isArray(draft.ticket) ? { name: draft.name ?? '', ticket: draft.ticket, data: draft.data ?? {} }
-                                               : { name: '', ticket: defaultTicket(), data: {} };
-  $('#tplName').value = state.name;
   try {
-    const cfg = await api('/api/config');
+    const [cfg, h] = await Promise.all([api('/api/config'), api('/api/home')]);
     COLS = cfg.columns || 38;
-    $('#copies').max = cfg.maxCopies || 100;
-    $('#transport').value = store.get('transport') || cfg.transport || 'usb';
-    document.title = `Etiquetas · ${cfg.host}`;
-    await refreshTemplates(state.name);
-  } catch (e) { toast('Sin conexión con el servidor: ' + e.message, true); }
-  changed();
+    home = h;
+    fields = fieldsOf(home.ticket);
+  } catch (e) { setMsg('Sin conexión con el servidor: ' + e.message, true); }
+  renderFields();
+  renderPreview();
+  setInterval(renderPreview, 30000);   // la hora de la vista previa
 })();
 </script>
 </body>

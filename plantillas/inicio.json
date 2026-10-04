@@ -1,0 +1,44 @@
+{
+  "printer": {
+    "unc": "\\localhost\ticket",
+    "codePage": 16,
+    "charSet": 8,
+    "marginLeftDots": 60,
+    "printWidthDots": 456,
+    "paperWidth": 38,
+    "padding": 0
+  },
+  "ticket": [
+    {
+      "type": "feed",
+      "lines": 2
+    },
+    {
+      "type": "text",
+      "value": "{{texto}}",
+      "align": "center",
+      "size": [
+        2,
+        2
+      ],
+      "bold": true
+    },
+    {
+      "type": "feed",
+      "lines": 2
+    },
+    {
+      "type": "text",
+      "value": "{{fecha_hora}}",
+      "align": "center",
+      "size": [
+        1,
+        1
+      ],
+      "bold": false
+    },
+    {
+      "type": "cut"
+    }
+  ]
+}

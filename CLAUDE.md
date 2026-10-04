@@ -34,7 +34,10 @@ Repositorio: https://github.com/SrVerde/etiquetas_coffeeandcopy (rama `main`).
 - `server.js` — HTTP sin dependencias: estáticos de `public/`, CRUD de `plantillas/*.json`, `POST /api/print` con cola (una impresión a la vez), variables `{{campo}}`, copias. Registro en `logs/servidor.log`. Config en `server-config.json` (puerto 80, `mdnsName: "etiquetas"`, transporte por defecto `usb`).
 - `auth.js` — PIN (scrypt, `datos/pin.json`) + sesiones persistentes por cookie (`datos/sesiones.json`, solo SHA-256 del token, atadas al PIN) + bloqueo por IP tras 5 fallos. Todo pide sesión salvo `/login.html` y `/api/login`. PIN con `cambiar-pin.cmd` / `herramientas/pin.js`.
 - `mdns.js` — anunciador mDNS propio (A + NSEC para AAAA) en UDP 5353.
-- `public/index.html` — editor (vanilla JS, sin CDNs): texto con tamaño/alineación/negrita, separador, espacio, vista previa de 38 columnas, plantillas, copias, Ctrl+S / Ctrl+P.
+- `public/index.html` — **inicio** para los empleados: campos generados de la plantilla del inicio (`{{var}}` → campo "Var" con su tipo de letra, sin llaves), vista previa con placeholders, botón Imprimir (Enter imprime). Pensado para que no intimide: nada de configuración a la vista.
+- Plantilla del inicio: `datos/inicio.json` (`{ template }`, se elige con "Usar en inicio" en Avanzado); por defecto `plantillas/inicio.json` (2 líneas, `{{texto}}` 2×2 negrita centrado, 2 líneas, `{{fecha_hora}}` normal centrado). Si no existe, `server.js` usa una copia interna.
+- Variables automáticas `{{fecha}}`, `{{hora}}`, `{{fecha_hora}}` (dd/mm/aaaa HH:MM, reloj de la PC): `autoVars()` en `server.js` al imprimir, con prioridad sobre `data`. Las páginas tienen una copia de `autoVars()` solo para la vista previa y no las piden como campos.
+- `public/avanzado.html` — editor (vanilla JS, sin CDNs), con botón "← Inicio": texto con tamaño/alineación/negrita, separador, espacio, vista previa de 38 columnas, plantillas, copias, Ctrl+S / Ctrl+P.
 - `main.js` — CLI: `node main.js plantilla.json [--usb | --unc=\\PC\cola]`.
 - `servicio.ps1` + `instalar-servicio.cmd` / `desinstalar-servicio.cmd` — tarea programada al arrancar (SYSTEM, reinicio cada minuto si falla) y reglas de firewall TCP 80 + UDP 5353. Quita las reglas de **bloqueo** a node.exe que crea el aviso del firewall.
 - `herramientas/calibracion.js` — regla a todo el ancho (`npm run calibrar`).
@@ -51,6 +54,7 @@ Repositorio: https://github.com/SrVerde/etiquetas_coffeeandcopy (rama `main`).
 - ✅ Probado desde un celular en la red: `http://etiquetas.local` abre.
 - ✅ Acceso con PIN implementado (los clientes del café comparten la red). La cola compartida `ticket` da permiso de imprimir a Todos y SMB está abierto en el firewall; hoy solo lo frena que `Taller` no tiene contraseña e Invitado está desactivado. Si se le pone contraseña a `Taller`, revisar la cola.
 - ✅ Probado: tras reiniciar la PC el servidor arranca solo.
+- ✅ Inicio simple (campo grande + Imprimir) y Avanzado separados; fecha y hora automáticas. Impresión real desde el inicio verificada.
 
 ## Pendientes sugeridos
 

@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Etiquetas · Avanzado</title>
+<style>
+  :root {
+    --bg: #f3f2ef; --panel: #ffffff; --ink: #1d1d1b; --muted: #6d6a64; --line: #e2dfd8;
+    --accent: #1f5f5b; --accent-ink: #ffffff; --accent-soft: #e3efed; --danger: #a33a2c;
+    --paper: #fffefa; --lh: 1.38em;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 14px/1.4 system-ui, "Segoe UI", Roboto, sans-serif; }
+  button, input, select { font: inherit; color: inherit; }
+
+  /* ── Top bar ─────────────────────────────────────────── */
+  header { position: sticky; top: 0; z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; padding: 10px 16px; }
+  header h1 { font-size: 16px; margin: 0 8px 0 0; letter-spacing: .02em; }
+  .group { display: flex; gap: 6px; align-items: center; }
+  .grow { flex: 1; }
+  label.small { font-size: 12px; color: var(--muted); }
+  input[type=text], input[type=number], select {
+    border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; background: #fff; min-width: 0; }
+  input[type=number] { width: 64px; }
+  .btn { border: 1px solid var(--line); background: #fff; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+  .btn:hover { border-color: #c9c4b9; }
+  a.btn { text-decoration: none; display: inline-block; }
+  .btn.back { font-weight: 600; border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; padding: 7px 18px; }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn.primary:disabled { opacity: .6; cursor: progress; }
+  .btn.ghost { border-color: transparent; background: transparent; padding: 4px 7px; color: var(--muted); }
+  .btn.ghost:hover { background: var(--bg); color: var(--ink); }
+  .btn.danger:hover { color: var(--danger); }
+
+  /* ── Layout ──────────────────────────────────────────── */
+  main { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 20px; padding: 16px; max-width: 1300px; margin: 0 auto; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } .preview-wrap { position: static !important; } }
+
+  /* ── Element list ────────────────────────────────────── */
+  .list { display: flex; flex-direction: column; gap: 8px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: grid; gap: 8px; }
+  .card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .card .row1 { display: flex; gap: 8px; align-items: center; }
+  .card .row1 input[type=text] { flex: 1; }
+  .card .row2 { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .tag { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); min-width: 64px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .seg button { border: 0; border-right: 1px solid var(--line); background: #fff; padding: 5px 9px; cursor: pointer; font-size: 13px; }
+  .seg button:last-child { border-right: 0; }
+  .seg button[aria-pressed=true] { background: var(--accent); color: var(--accent-ink); }
+  .seg button:hover:not([aria-pressed=true]) { background: var(--bg); }
+  .tools { margin-left: auto; display: flex; gap: 2px; }
+  .add { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .add .btn { border-style: dashed; }
+  .empty { color: var(--muted); padding: 20px; text-align: center; border: 1px dashed var(--line); border-radius: 8px; }
+
+  .vars { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin-bottom: 12px; display: none; }
+  .vars.show { display: block; }
+  .vars h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+  .vars .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+  .vars label { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+
+  /* ── Preview ─────────────────────────────────────────── */
+  .preview-wrap { position: sticky; top: 72px; align-self: start; }
+  .preview-wrap .cap { font-size: 12px; color: var(--muted); margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; }
+  .liner { background: #ebe7dc; padding: 14px 10px; border-radius: 6px; }
+  .sticker { background: var(--paper); border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.12);
+    padding: 14px 12px; font-family: Consolas, "Cascadia Mono", "Courier New", monospace; font-size: 15px; }
+  .paper { width: calc(var(--cols) * 1ch); }
+  .ln { height: var(--lh); line-height: var(--lh); white-space: pre; overflow: visible; cursor: pointer; }
+  .ln:hover { background: var(--accent-soft); }
+  .ln.sel { background: var(--accent-soft); }
+  .ln .sp { display: inline-block; }
+  .ln .box { display: inline-block; vertical-align: top; overflow: visible; }
+  .ln .box > span { display: inline-block; transform-origin: 0 0; line-height: var(--lh); }
+  .ln.b { font-weight: 700; }
+  .bc { margin: 4px auto; text-align: center; font-size: 12px; }
+  .bc .bars { height: 40px; margin: 0 auto 2px; width: 70%;
+    background: repeating-linear-gradient(90deg, #1d1d1b 0 2px, transparent 2px 4px, #1d1d1b 4px 5px, transparent 5px 8px); }
+  .qr { width: 90px; height: 90px; margin: 4px auto; border: 6px solid #1d1d1b; display: grid; place-items: center; font-size: 12px; }
+  .cut { border-top: 1px dashed #b8b2a5; margin: 10px -12px 0; position: relative; height: 0; }
+  .cut::after { content: "✂"; position: absolute; right: -2px; top: -11px; font-size: 13px; color: #9a9385; }
+  .warn { color: var(--danger); }
+
+  /* ── Toast ───────────────────────────────────────────── */
+  .toast { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); background: var(--ink); color: #fff;
+    padding: 8px 14px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; }
+  .toast.show { opacity: 1; }
+  .toast.err { background: var(--danger); }
+</style>
+</head>
+<body>
+<header>
+  <a class="btn back" href="/" title="Volver a la pantalla de inicio">← Inicio</a>
+  <h1>Avanzado</h1>
+  <div class="group">
+    <select id="tplSelect" title="Abrir plantilla"><option value="">Abrir plantilla…</option></select>
+    <input id="tplName" type="text" placeholder="nombre de la plantilla" size="18">
+    <button class="btn" id="btnSave" title="Guardar (Ctrl+S)">Guardar</button>
+    <button class="btn" id="btnNew">Nueva</button>
+    <button class="btn ghost danger" id="btnDelete" title="Eliminar plantilla">Eliminar</button>
+    <button class="btn" id="btnHome" title="Mostrar esta plantilla en la pantalla de inicio">Usar en inicio</button>
+  </div>
+  <div class="grow"></div>
+  <div class="group">
+    <label class="small" for="copies">Copias</label>
+    <input id="copies" type="number" min="1" value="1">
+    <label class="small" for="transport">Envío</label>
+    <select id="transport">
+      <option value="usb">USB directo</option>
+      <option value="unc">Cola compartida</option>
+    </select>
+    <button class="btn primary" id="btnPrint" title="Imprimir (Ctrl+P)">Imprimir</button>
+    <button class="btn ghost" id="btnLogout" title="Cerrar la sesión en este dispositivo">Salir</button>
+  </div>
+</header>
+
+<main>
+  <section>
+    <div class="vars" id="vars">
+      <h2>Datos de esta impresión</h2>
+      <div class="grid" id="varsGrid"></div>
+    </div>
+    <div class="list" id="list"></div>
+    <div class="add">
+      <button class="btn" data-add="text">+ Texto</button>
+      <button class="btn" data-add="separator">+ Separador</button>
+      <button class="btn" data-add="feed">+ Espacio</button>
+      <button class="btn" data-add="fecha">+ Fecha y hora</button>
+    </div>
+    <p class="small" style="color:var(--muted);margin-top:14px">
+      Escribe <code>{{campo}}</code> en un texto para pedir el dato al imprimir (p. ej. <code>{{precio}}</code>).<br>
+      Se llenan solas al imprimir: <code>{{fecha}}</code> 03/10/2026 · <code>{{hora}}</code> 19:15 · <code>{{fecha_hora}}</code> las dos.
+    </p>
+  </section>
+
+  <aside class="preview-wrap">
+    <p class="cap"><span>Vista previa</span><span id="capInfo"></span></p>
+    <div class="liner"><div class="sticker"><div class="paper" id="paper"></div></div></div>
+  </aside>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const SIZES = [ { k: 'Normal', v: [1,1] }, { k: 'Ancho', v: [2,1] }, { k: 'Alto', v: [1,2] },
+                { k: 'Grande', v: [2,2] }, { k: 'Enorme', v: [3,3] } ];
+const ALIGNS = [ { k: 'Izq', v: 'left', t: 'Izquierda' }, { k: 'Centro', v: 'center', t: 'Centro' }, { k: 'Der', v: 'right', t: 'Derecha' } ];
+
+let COLS = 38;
+let state = { name: '', ticket: [], data: {} };
+let selected = -1;
+let homeName = null;   // plantilla que se muestra en el inicio
+
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+
+const defaultTicket = () => ([
+  { type: 'text', value: '{{producto}}', align: 'center', size: [2,2], bold: true },
+  { type: 'separator', char: '-' },
+  { type: 'text', value: 'Precio', align: 'left', size: [1,1], bold: false },
+  { type: 'text', value: '${{precio}}', align: 'right', size: [2,2], bold: true },
+  { type: 'feed', lines: 1 },
+  { type: 'text', value: 'Gracias por su compra', align: 'center', size: [1,1], bold: false },
+]);
+
+// ── Layout helpers (mirror printer.js) ───────────────────────────────────
+function wrapWords(text, width) {
+  if (width <= 0) return [''];
+  const lines = []; let cur = '';
+  for (const word of String(text ?? '').split(' ')) {
+    let token = word;
+    while (token.length > width) { if (cur) { lines.push(cur); cur = ''; } lines.push(token.slice(0, width)); token = token.slice(width); }
+    if (!token) continue;
+    const test = cur ? cur + ' ' + token : token;
+    if (test.length > width) { if (cur) lines.push(cur); cur = token; } else cur = test;
+  }
+  if (cur) lines.push(cur);
+  return lines.length ? lines : [''];
+}
+// Variables automáticas: las llena el servidor al imprimir (aquí solo para la vista previa)
+function autoVars(d = new Date()) {
+  const p = n => String(n).padStart(2, '0');
+  const fecha = `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`, hora = `${p(d.getHours())}:${p(d.getMinutes())}`;
+  return { fecha, hora, fecha_hora: `${fecha} ${hora}` };
+}
+const AUTO = Object.keys(autoVars());
+const fill = s => { const auto = autoVars();
+  return String(s ?? '').replace(/\{\{\s*([\w.-]+)\s*\}\}/g, (m, k) => (k in auto ? auto[k] : state.data[k] ? state.data[k] : m)); };
+// variables que se piden al imprimir (sin las automáticas)
+const varsIn = t => {
+  const set = new Set();
+  for (const el of t) for (const s of [el.value, el.char, ...(el.columns ?? []).map(c => c.text)])
+    for (const m of String(s ?? '').matchAll(/\{\{\s*([\w.-]+)\s*\}\}/g)) set.add(m[1]);
+  return [...set].filter(k => !AUTO.includes(k));
+};
+
+// ── Preview ──────────────────────────────────────────────────────────────
+function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+
+function line(idx, { lead = 0, text = '', sw = 1, sh = 1, bold = false }) {
+  const d = el('div', 'ln' + (bold ? ' b' : '') + (idx === selected ? ' sel' : ''));
+  d.style.height = `calc(var(--lh) * ${sh})`;
+  d.dataset.idx = idx;
+  const sp = el('span', 'sp'); sp.style.width = lead + 'ch'; d.append(sp);
+  const box = el('span', 'box'); box.style.width = (text.length * sw) + 'ch'; box.style.height = `calc(var(--lh) * ${sh})`;
+  const inner = el('span', null, text); inner.style.transform = `scale(${sw}, ${sh})`;
+  box.append(inner); d.append(box);
+  return d;
+}
+
+function renderPreview() {
+  const paper = $('#paper');
+  paper.style.setProperty('--cols', COLS);
+  paper.replaceChildren();
+  let lines = 0, warn = '';
+  state.ticket.forEach((e, i) => {
+    switch (e.type) {
+      case 'text': {
+        const [sw, sh] = e.size ?? [1,1];
+        const budget = Math.max(1, Math.floor(COLS / sw));
+        for (const ln of wrapWords(fill(e.value), budget)) {
+          const free = Math.max(0, COLS - ln.length * sw);
+          const lead = e.align === 'right' ? free : e.align === 'center' ? Math.floor(free / 2) : 0;
+          paper.append(line(i, { lead, text: ln, sw, sh, bold: e.bold })); lines += sh;
+        }
+        break;
+      }
+      case 'separator': paper.append(line(i, { text: (e.char || '-')[0].repeat(COLS) })); lines++; break;
+      case 'feed': for (let k = 0; k < (e.lines || 1); k++) { paper.append(line(i, {})); lines++; } break;
+      case 'row': {
+        const sum = (e.columns ?? []).reduce((a, c) => a + (c.width | 0), 0);
+        if (sum !== COLS) warn = `Una fila suma ${sum} columnas (deben ser ${COLS})`;
+        const txt = (e.columns ?? []).map(c => {
+          const s = (wrapWords(fill(c.text), c.width)[0] ?? '').slice(0, c.width), pad = c.width - s.length;
+          return c.align === 'right' ? s.padStart(c.width) : c.align === 'center' ? ' '.repeat(pad >> 1) + s + ' '.repeat(pad - (pad >> 1)) : s.padEnd(c.width);
+        }).join('');
+        paper.append(line(i, { text: txt, bold: e.bold })); lines++; break;
+      }
+      case 'barcode': { const b = el('div', 'bc'); b.dataset.idx = i; b.append(el('div', 'bars'), el('div', null, fill(e.value))); paper.append(b); break; }
+      case 'qr': { const q = el('div', 'qr', 'QR'); q.dataset.idx = i; paper.append(q); break; }
+      case 'cut': paper.append(el('div', 'cut')); break;
+    }
+  });
+  if (!state.ticket.some(e => e.type === 'cut')) paper.append(el('div', 'cut'));
+  const info = $('#capInfo');
+  info.textContent = warn || `${COLS} columnas · ${lines} líneas`;
+  info.className = warn ? 'warn' : '';
+}
+
+// ── Editor ───────────────────────────────────────────────────────────────
+function seg(options, current, onPick, eq = (a, b) => a === b) {
+  const s = el('div', 'seg');
+  for (const o of options) {
+    const b = el('button', null, o.k); b.type = 'button'; b.title = o.t || o.k;
+    b.setAttribute('aria-pressed', eq(o.v, current) ? 'true' : 'false');
+    b.onclick = () => onPick(o.v);
+    s.append(b);
+  }
+  return s;
+}
+function toolBtn(label, title, fn, extra = '') { const b = el('button', 'btn ghost ' + extra, label); b.type = 'button'; b.title = title; b.onclick = fn; return b; }
+
+function update(i, patch, rerenderList = false) {
+  Object.assign(state.ticket[i], patch);
+  changed(rerenderList);
+}
+function changed(rerenderList = true) {
+  store.set('draft', state);
+  if (rerenderList) renderList();
+  renderVars();
+  renderPreview();
+}
+
+function renderList() {
+  const list = $('#list');
+  list.replaceChildren();
+  if (!state.ticket.length) { list.append(el('div', 'empty', 'Etiqueta vacía. Agrega un texto para empezar.')); return; }
+  state.ticket.forEach((e, i) => {
+    const c = el('div', 'card' + (i === selected ? ' selected' : ''));
+    c.dataset.idx = i;
+    c.addEventListener('focusin', () => select(i, false));
+    const tools = el('div', 'tools');
+    tools.append(
+      toolBtn('↑', 'Subir', () => move(i, -1)),
+      toolBtn('↓', 'Bajar', () => move(i, 1)),
+      toolBtn('⧉', 'Duplicar', () => { state.ticket.splice(i + 1, 0, structuredClone(e)); selected = i + 1; changed(); }),
+      toolBtn('✕', 'Eliminar', () => { state.ticket.splice(i, 1); selected = -1; changed(); }, 'danger'),
+    );
+
+    if (e.type === 'text') {
+      const r1 = el('div', 'row1');
+      const inp = el('input'); inp.type = 'text'; inp.value = e.value ?? ''; inp.placeholder = 'Texto…';
+      inp.oninput = () => update(i, { value: inp.value });
+      r1.append(inp, tools);
+      const r2 = el('div', 'row2');
+      r2.append(
+        seg(SIZES, e.size ?? [1,1], v => update(i, { size: v }, true), (a, b) => a[0] === b[0] && a[1] === b[1]),
+        seg(ALIGNS, e.align ?? 'left', v => update(i, { align: v }, true)),
+        seg([{ k: 'B', v: true, t: 'Negrita' }], !!e.bold, () => update(i, { bold: !e.bold }, true)),
+      );
+      r2.querySelector('.seg:last-child button').style.fontWeight = '700';
+      c.append(r1, r2);
+    } else if (e.type === 'separator') {
+      const r1 = el('div', 'row1');
+      const inp = el('input'); inp.type = 'text'; inp.value = e.char ?? '-'; inp.maxLength = 1; inp.style.width = '48px'; inp.style.flex = '0 0 auto';
+      inp.title = 'Carácter del separador';
+      inp.oninput = () => update(i, { char: inp.value || '-' });
+      r1.append(el('span', 'tag', 'Separador'), inp, el('span', 'grow'), tools);
+      c.append(r1);
+    } else if (e.type === 'feed') {
+      const r1 = el('div', 'row1');
+      const inp = el('input'); inp.type = 'number'; inp.min = 1; inp.max = 20; inp.value = e.lines ?? 1;
+      inp.oninput = () => update(i, { lines: Math.max(1, Math.min(20, inp.value | 0)) });
+      r1.append(el('span', 'tag', 'Espacio'), inp, el('span', 'small', 'línea(s)'), el('span', 'grow'), tools);
+      c.append(r1);
+    } else {
+      const r1 = el('div', 'row1');
+      r1.append(el('span', 'tag', e.type), el('span', 'small', 'Se imprime tal cual (edítalo en el JSON)'), el('span', 'grow'), tools);
+      c.append(r1);
+    }
+    list.append(c);
+  });
+}
+
+function renderVars() {
+  const names = varsIn(state.ticket);
+  const box = $('#vars'), grid = $('#varsGrid');
+  box.classList.toggle('show', names.length > 0);
+  const existing = new Map([...grid.querySelectorAll('input')].map(i => [i.name, i]));
+  if (names.length === existing.size && names.every(n => existing.has(n))) return;   // keep focus while typing
+  grid.replaceChildren();
+  for (const n of names) {
+    const l = el('label', null, n);
+    const inp = el('input'); inp.type = 'text'; inp.name = n; inp.value = state.data[n] ?? '';
+    inp.oninput = () => { state.data[n] = inp.value; store.set('draft', state); renderPreview(); };
+    l.append(inp); grid.append(l);
+  }
+}
+
+function move(i, d) {
+  const j = i + d; if (j < 0 || j >= state.ticket.length) return;
+  [state.ticket[i], state.ticket[j]] = [state.ticket[j], state.ticket[i]];
+  selected = j; changed();
+}
+function select(i, focus = true) {
+  if (selected === i) return;
+  selected = i;
+  document.querySelectorAll('.card').forEach(c => c.classList.toggle('selected', +c.dataset.idx === i));
+  renderPreview();
+  if (focus) {
+    const card = document.querySelector(`.card[data-idx="${i}"]`);
+    card?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    card?.querySelector('input')?.focus();
+  }
+}
+$('#paper').addEventListener('click', ev => {
+  const n = ev.target.closest('[data-idx]'); if (n) select(+n.dataset.idx);
+});
+document.querySelectorAll('[data-add]').forEach(b => b.onclick = () => {
+  const t = b.dataset.add;
+  const item = t === 'text' ? { type: 'text', value: '', align: 'left', size: [1,1], bold: false }
+             : t === 'fecha' ? { type: 'text', value: '{{fecha}} {{hora}}', align: 'center', size: [1,1], bold: false }
+             : t === 'separator' ? { type: 'separator', char: '-' } : { type: 'feed', lines: 1 };
+  const at = selected >= 0 ? selected + 1 : state.ticket.length;
+  state.ticket.splice(at, 0, item); selected = at; changed();
+  if (t === 'text') document.querySelector(`.card[data-idx="${at}"] input`)?.focus();
+});
+
+// ── Server I/O ───────────────────────────────────────────────────────────
+let toastTimer;
+function toast(msg, err = false) {
+  const t = $('#toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = 'toast' + (err ? ' err' : ''), err ? 6000 : 2500);
+}
+async function api(path, opts = {}) {
+  const r = await fetch(path, { headers: { 'Content-Type': 'application/json' }, ...opts });
+  const j = await r.json().catch(() => ({}));
+  if (r.status === 401 && j.login) { location.href = '/login.html'; throw new Error(j.error); }
+  if (!r.ok) throw new Error(j.error || `Error ${r.status}`);
+  return j;
+}
+$('#btnLogout').onclick = async () => {
+  if (!confirm('¿Cerrar la sesión en este dispositivo? Habrá que escribir el PIN otra vez.')) return;
+  await api('/api/logout', { method: 'POST' }).catch(() => {});
+  location.href = '/login.html';
+};
+async function refreshTemplates(selectName) {
+  const names = await api('/api/templates');
+  const s = $('#tplSelect');
+  s.replaceChildren(new Option('Abrir plantilla…', ''));
+  homeName = (await api('/api/home').catch(() => ({}))).template ?? null;
+  for (const n of names) s.append(new Option(n === homeName ? `${n}  ★ inicio` : n, n));
+  s.value = selectName && names.includes(selectName) ? selectName : '';
+}
+
+$('#tplSelect').onchange = async ev => {
+  const name = ev.target.value; if (!name) return;
+  try {
+    const tpl = await api('/api/templates/' + encodeURIComponent(name));
+    state = { name, ticket: tpl.ticket ?? [], data: {} };
+    // the cut at the end is implicit
+    if (state.ticket.at(-1)?.type === 'cut' && !state.ticket.at(-1).feed) state.ticket.pop();
+    selected = -1; $('#tplName').value = name; changed();
+    toast(`Plantilla "${name}" abierta`);
+  } catch (e) { toast(e.message, true); }
+};
+async function save() {
+  const name = $('#tplName').value.trim();
+  if (!name) { $('#tplName').focus(); return toast('Escribe un nombre para la plantilla', true); }
+  try {
+    await api('/api/templates/' + encodeURIComponent(name), { method: 'PUT', body: JSON.stringify({ ticket: state.ticket }) });
+    state.name = name; store.set('draft', state);
+    await refreshTemplates(name);
+    toast(`Guardada: ${name}`);
+  } catch (e) { toast(e.message, true); }
+}
+$('#btnSave').onclick = save;
+$('#btnNew').onclick = () => {
+  state = { name: '', ticket: [{ type: 'text', value: '', align: 'center', size: [1,1], bold: false }], data: {} };
+  selected = 0; $('#tplName').value = ''; $('#tplSelect').value = ''; changed();
+  document.querySelector('.card input')?.focus();
+};
+$('#btnDelete').onclick = async () => {
+  const name = $('#tplName').value.trim(); if (!name) return;
+  const extra = name === homeName ? '\n\nEs la plantilla del inicio: el inicio volverá al texto grande básico.' : '';
+  if (!confirm(`¿Eliminar la plantilla "${name}"?${extra}`)) return;
+  try { await api('/api/templates/' + encodeURIComponent(name), { method: 'DELETE' }); await refreshTemplates(); toast('Plantilla eliminada'); }
+  catch (e) { toast(e.message, true); }
+};
+
+$('#btnHome').onclick = async () => {
+  const name = $('#tplName').value.trim();
+  const names = [...$('#tplSelect').options].map(o => o.value);
+  if (!name || !names.includes(name)) return toast('Guarda la plantilla primero', true);
+  if (!varsIn(state.ticket).length &&
+      !confirm('Esta plantilla no tiene campos {{...}}: en el inicio solo se podrá imprimir tal cual. ¿Usarla?')) return;
+  try {
+    await api('/api/home', { method: 'PUT', body: JSON.stringify({ template: name }) });
+    await refreshTemplates(name);
+    toast(`"${name}" se muestra ahora en el inicio`);
+  } catch (e) { toast(e.message, true); }
+};
+
+async function print() {
+  const missing = varsIn(state.ticket).filter(n => !state.data[n]);
+  if (missing.length) {
+    toast(`Falta llenar: ${missing.join(', ')}`, true);
+    document.querySelector(`#varsGrid input[name="${missing[0]}"]`)?.focus();
+    return;
+  }
+  const btn = $('#btnPrint'); btn.disabled = true; btn.textContent = 'Imprimiendo…';
+  try {
+    const copies = Math.max(1, $('#copies').value | 0);
+    const r = await api('/api/print', { method: 'POST', body: JSON.stringify({
+      ticket: state.ticket, data: state.data, copies, transport: $('#transport').value }) });
+    toast(`Enviado: ${r.copies} etiqueta(s) por ${r.transport === 'usb' ? 'USB' : 'cola compartida'}`);
+  } catch (e) { toast('No se pudo imprimir: ' + e.message, true); }
+  finally { btn.disabled = false; btn.textContent = 'Imprimir'; }
+}
+$('#btnPrint').onclick = print;
+$('#transport').onchange = ev => store.set('transport', ev.target.value);
+document.addEventListener('keydown', ev => {
+  if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 's') { ev.preventDefault(); save(); }
+  if ((ev.ctrlKey || ev.metaKey) && ev.key.toLowerCase() === 'p') { ev.preventDefault(); print(); }
+});
+
+// ── Start ────────────────────────────────────────────────────────────────
+(async () => {
+  const draft = store.get('draft');
+  state = draft && Array.isArray(draft.ticket) ? { name: draft.name ?? '', ticket: draft.ticket, data: draft.data ?? {} }
+                                               : { name: '', ticket: defaultTicket(), data: {} };
+  $('#tplName').value = state.name;
+  try {
+    const cfg = await api('/api/config');
+    COLS = cfg.columns || 38;
+    $('#copies').max = cfg.maxCopies || 100;
+    $('#transport').value = store.get('transport') || cfg.transport || 'usb';
+    document.title = `Etiquetas · ${cfg.host}`;
+    await refreshTemplates(state.name);
+  } catch (e) { toast('Sin conexión con el servidor: ' + e.message, true); }
+  changed();
+  setInterval(renderPreview, 30000);   // la hora de la vista previa
+})();
+</script>
+</body>
+</html>

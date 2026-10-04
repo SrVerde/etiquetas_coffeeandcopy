@@ -18,7 +18,12 @@
  *   GET    /api/templates/:nombre      → plantilla
  *   PUT    /api/templates/:nombre      → guarda { ticket: [...] }
  *   DELETE /api/templates/:nombre      → borra
+ *   GET    /api/home                   → { template, ticket }  plantilla que se muestra en el inicio
+ *   PUT    /api/home                   → { template }  elige la plantilla del inicio
  *   POST   /api/print                  → { ticket:[...] | template:"nombre", data:{campo:valor}, copies, transport:"usb"|"unc" }
+ *
+ * Variables automáticas (las llena el servidor al imprimir, con el reloj de esta PC):
+ *   {{fecha}} → 03/10/2026   {{hora}} → 19:15   {{fecha_hora}} → 03/10/2026 19:15
  */
 
 import http from 'node:http';
@@ -37,7 +42,8 @@ const TPL_DIR     = join(__dirname, 'plantillas');
 const PUBLIC_DIR  = join(__dirname, 'public');
 const LOG_DIR     = join(__dirname, 'logs');
 const LOG_FILE    = join(LOG_DIR, 'servidor.log');
-const DATA_DIR    = join(__dirname, 'datos');     // PIN y sesiones (fuera del repo)
+const DATA_DIR    = join(__dirname, 'datos');     // PIN, sesiones y plantilla del inicio (fuera del repo)
+const HOME_PATH   = join(DATA_DIR, 'inicio.json');
 
 // ── Registro: consola + logs/servidor.log (rota a .old al pasar de 5 MB) ────
 mkdirSync(LOG_DIR, { recursive: true });
@@ -120,6 +126,29 @@ function fillVars(value, data) {
   return value.replace(/\{\{\s*([\w.-]+)\s*\}\}/g, (m, k) => (k in data ? String(data[k]) : m));
 }
 
+// Plantilla del inicio: la elegida en Avanzado (datos/inicio.json) o "inicio".
+// Si el archivo de la plantilla no existe, se usa esta de respaldo.
+const HOME_DEFAULT  = 'inicio';
+const HOME_FALLBACK = [
+  { type: 'feed', lines: 2 },
+  { type: 'text', value: '{{texto}}', align: 'center', size: [2, 2], bold: true },
+  { type: 'feed', lines: 2 },
+  { type: 'text', value: '{{fecha_hora}}', align: 'center', size: [1, 1], bold: false },
+  { type: 'cut' },
+];
+async function homeTemplateName() {
+  try { return JSON.parse(await readFile(HOME_PATH, 'utf8')).template || HOME_DEFAULT; }
+  catch { return HOME_DEFAULT; }
+}
+
+/** Variables automáticas: fecha y hora de esta PC en el momento de imprimir. */
+function autoVars(d = new Date()) {
+  const p = n => String(n).padStart(2, '0');
+  const fecha = `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
+  const hora  = `${p(d.getHours())}:${p(d.getMinutes())}`;
+  return { fecha, hora, fecha_hora: `${fecha} ${hora}` };
+}
+
 const ALLOWED = new Set(['text', 'separator', 'feed', 'row', 'barcode', 'qr', 'cut']);
 
 /** Valida y normaliza la lista de elementos (sin imágenes: no se leen archivos desde la web). */
@@ -180,6 +209,22 @@ async function handleApi(req, res, url) {
     });
   }
 
+  if (parts[1] === 'home' && req.method === 'GET') {
+    const name = await homeTemplateName();
+    try { return send(res, 200, { template: name, ticket: JSON.parse(await readFile(tplPath(name), 'utf8')).ticket ?? [] }); }
+    catch (e) { if (e.code !== 'ENOENT') throw e; }
+    return send(res, 200, { template: null, ticket: HOME_FALLBACK });
+  }
+  if (parts[1] === 'home' && req.method === 'PUT') {
+    const name = String((await readBody(req, 1000)).template ?? '');
+    try { await readFile(tplPath(name)); }
+    catch (e) { if (e.code === 'ENOENT') return send(res, 404, { error: 'Esa plantilla no existe' }); throw e; }
+    await mkdir(DATA_DIR, { recursive: true });
+    await writeFile(HOME_PATH, JSON.stringify({ template: name }, null, 2), 'utf8');
+    log(`Plantilla del inicio: ${name}`);
+    return send(res, 200, { ok: true, template: name });
+  }
+
   if (parts[1] === 'templates') {
     const name = parts[2];
     if (!name && req.method === 'GET') {
@@ -210,7 +255,9 @@ async function handleApi(req, res, url) {
     const body = await readBody(req);
     let ticket = body.ticket;
     if (!ticket && body.template) ticket = JSON.parse(await readFile(tplPath(String(body.template)), 'utf8')).ticket;
-    const clean     = sanitizeTicket(ticket, body.data, config.printer.paperWidth);
+    // las automáticas mandan: no se pueden escribir a mano
+    const data      = { ...(body.data && typeof body.data === 'object' ? body.data : {}), ...autoVars() };
+    const clean     = sanitizeTicket(ticket, data, config.printer.paperWidth);
     const copies    = Math.min(config.maxCopies, Math.max(1, body.copies | 0 || 1));
     const transport = body.transport === 'unc' || body.transport === 'usb' ? body.transport : config.transport;
 

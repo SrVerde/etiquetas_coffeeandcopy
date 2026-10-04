@@ -2,7 +2,9 @@
 
 Servidor de red local para diseñar e imprimir **etiquetas adhesivas** en una impresora térmica genérica ESC/POS (POS80, USB `VID 0416 / PID 5011`) conectada a una PC con Windows.
 
-- **Editor web** en `http://etiquetas.local`: texto con tamaño, alineación y negrita, separadores y espacios, vista previa del sticker, plantillas guardadas, variables `{{campo}}`, copias.
+- **Pantalla de inicio** en `http://etiquetas.local`: un campo grande, vista previa e **Imprimir**. Los campos salen de la plantilla del inicio (por defecto `plantillas/inicio.json`: texto grande centrado y, abajo, fecha y hora); las `{{variables}}` se muestran como campos con nombre, sin llaves.
+- **Avanzado** (`/avanzado.html`, enlace en el inicio) — editor web: texto con tamaño, alineación y negrita, separadores y espacios, vista previa del sticker, plantillas guardadas, variables `{{campo}}`, copias y **Usar en inicio** para elegir la plantilla del inicio (se guarda en `datos/inicio.json`).
+- **Variables automáticas**: `{{fecha}}` (03/10/2026), `{{hora}}` (19:15) y `{{fecha_hora}}` las llena el servidor al imprimir, con el reloj de la PC. No se piden en el inicio. Funcionan también por la API.
 - **Se imprime desde cualquier equipo de la red** con un navegador. No hace falta instalar nada en los otros equipos.
 - **Dos vías de envío:** USB directo (sin la cola de impresión de Windows) o la cola compartida de Windows (`\\PC\ticket`).
 - **Márgenes por software,** calibrados para el sticker. Salen idénticos por USB y por la cola compartida.
@@ -82,6 +84,8 @@ Content-Type: application/json
 | `GET` | `/api/config` | Columnas, vía por defecto, nombre del equipo |
 | `GET` | `/api/templates` | Lista de plantillas |
 | `GET / PUT / DELETE` | `/api/templates/:nombre` | Leer, guardar (`{ "ticket": [...] }`) o borrar |
+| `GET` | `/api/home` | Plantilla del inicio: `{ template, ticket }` |
+| `PUT` | `/api/home` | `{ "template": "nombre" }`: elige la plantilla del inicio |
 | `POST` | `/api/print` | `ticket` o `template`, más `data`, `copies` y `transport` (`"usb"` o `"unc"`) |
 
 ## Configuración — `server-config.json`
@@ -125,7 +129,8 @@ mdns.js                anunciador mDNS (etiquetas.local)
 printer.js             JSON → ESC/POS, márgenes por software, envío USB/UNC
 usb-send.ps1           escritura RAW a la interfaz USB (Win32 CreateFile/WriteFile)
 main.js                impresión desde la línea de comandos
-public/index.html      editor web
+public/index.html      pantalla de inicio (campo + imprimir)
+public/avanzado.html   editor de plantillas
 plantillas/            plantillas guardadas desde el editor
 ejemplos/              plantillas de ejemplo (ticket, prueba de sticker)
 herramientas/          calibración del área de impresión, configuración del PIN
